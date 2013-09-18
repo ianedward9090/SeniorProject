@@ -23,13 +23,13 @@ int main(void)
 	PORTB = 0;
 
 	while(1){
-		for(i=0; i<100;i++){
+		for(i=0; i<20;i++){
 			clockwise(void);
 
 		}
-		_delay_ms(500);
+		_delay_ms(50);
 
-		for(i=0; i<100;i++){
+		for(i=0; i<20;i++){
 			counterclockwise(void);
 
 		}
@@ -45,26 +45,26 @@ int main(void)
 int clockwise(void)
 {
 	PORTB = 0b00001010;
-	_delay_ms(500);
+	_delay_ms(5);
 	PORTB = 0b00001001;
-	_delay_ms(500);
+	_delay_ms(5);
 	PORTB = 0b00000101;
-	_delay_ms(500);
+	_delay_ms(5);
 	PORTB = 0b00000110;
-	_delay_ms(500);
+	_delay_ms(5);
 	return 0;
 }
 
 int counterclockwise(void)
 {
 	PORTB = 0b00000110;
-	_delay_ms(500);
+	_delay_ms(5);
 	PORTB = 0b00000101;
-	_delay_ms(500);
+	_delay_ms(5);
 	PORTB = 0b00001001;
-	_delay_ms(500);
+	_delay_ms(5);
 	PORTB = 0b00001010;
-	_delay_ms(500);
+	_delay_ms(5);
 	return 0;
 
 
