@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "GccApplication1", "GccApplication1\GccApplication1.cproj", "{EA0C0884-3A30-4C6B-B31D-7499F648F4F1}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SeniorProjectGood", "GccApplication1\SeniorProjectGood.cproj", "{EA0C0884-3A30-4C6B-B31D-7499F648F4F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

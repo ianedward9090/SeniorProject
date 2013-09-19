@@ -1,5 +1,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdlib.h>
+
+#include "motor.h"
 
 
 //#define RED1   PORTB0
@@ -12,62 +15,57 @@
 //#define BLACK2 _BV(PB6)
 //#define WHITE2 _BV(PB7)
 
-int clockwise(void);
-int counterclockwise(void);
-
-int main(void)
-{
-	int i=0;
-	DDRB = 0xff;
-
-	PORTB = 0;
-
-	while(1){
-		for(i=0; i<20;i++){
-			clockwise(void);
-
-		}
-		_delay_ms(50);
-
-		for(i=0; i<20;i++){
-			counterclockwise(void);
-
-		}
-
-
-	}
-
-	return 0;
-
-}
-
-
 int clockwise(void)
 {
-	PORTB = 0b00001010;
-	_delay_ms(5);
-	PORTB = 0b00001001;
-	_delay_ms(5);
-	PORTB = 0b00000101;
-	_delay_ms(5);
-	PORTB = 0b00000110;
-	_delay_ms(5);
+	PORTD = 0b00001010;
+	_delay_ms(50);
+	PORTD = 0b00001001;
+	_delay_ms(50);
+	PORTD = 0b00000101;
+	_delay_ms(50);
+	PORTD = 0b00000110;
+	_delay_ms(50);
 	return 0;
 }
 
 int counterclockwise(void)
 {
-	PORTB = 0b00000110;
-	_delay_ms(5);
-	PORTB = 0b00000101;
-	_delay_ms(5);
-	PORTB = 0b00001001;
-	_delay_ms(5);
-	PORTB = 0b00001010;
-	_delay_ms(5);
+	PORTD = 0b00000110;
+	_delay_ms(50);
+	PORTD = 0b00000101;
+	_delay_ms(50);
+	PORTD = 0b00001001;
+	_delay_ms(50);
+	PORTD = 0b00001010;
+	_delay_ms(50);
 	return 0;
+}
 
-
-
+int rotate_relative(int current_state, int steps) {
+	int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
+	int next_state = current_state;
+	int current_upper_PORTD = 0;
+	
+	int i;
+	for (i = 0; i < abs(steps); i++) {
+		if (steps < 0) {
+			next_state = current_state - 1;
+		} else if (steps > 0) {
+			next_state = current_state + 1;
+		}
+		
+		// Preserve the upper four bits
+		current_upper_PORTD = PORTD&0xF0;
+		
+		
+		// Set the lower four bits according to state
+		PORTD = states[next_state%4] | current_upper_PORTD;
+		current_state = next_state%4;
+		
+		// Delay 10ms between steps
+		_delay_ms(50);
+	}
+	
+	return current_state;
 }
 
