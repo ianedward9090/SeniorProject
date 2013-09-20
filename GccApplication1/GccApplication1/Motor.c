@@ -1,9 +1,10 @@
+#define F_CPU 8000000UL 
+
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdlib.h>
 
 #include "motor.h"
-
 
 //#define RED1   PORTB0
 //#define BLUE1  PORTB1
@@ -15,30 +16,28 @@
 //#define BLACK2 _BV(PB6)
 //#define WHITE2 _BV(PB7)
 
-int clockwise(void)
+void clockwise(void)
 {
 	PORTD = 0b00001010;
-	_delay_ms(50);
+	_delay_ms(5);
 	PORTD = 0b00001001;
-	_delay_ms(50);
+	_delay_ms(5);
 	PORTD = 0b00000101;
-	_delay_ms(50);
+	_delay_ms(5);
 	PORTD = 0b00000110;
-	_delay_ms(50);
-	return 0;
+	_delay_ms(5);
 }
 
-int counterclockwise(void)
+void counterclockwise(void)
 {
 	PORTD = 0b00000110;
-	_delay_ms(50);
+	_delay_ms(5);
 	PORTD = 0b00000101;
-	_delay_ms(50);
+	_delay_ms(5);
 	PORTD = 0b00001001;
-	_delay_ms(50);
+	_delay_ms(5);
 	PORTD = 0b00001010;
-	_delay_ms(50);
-	return 0;
+	_delay_ms(5);
 }
 
 int rotate_relative(int current_state, int steps) {
@@ -63,7 +62,7 @@ int rotate_relative(int current_state, int steps) {
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps
-		_delay_ms(50);
+		_delay_ms(10);
 	}
 	
 	return current_state;
