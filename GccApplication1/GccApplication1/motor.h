@@ -5,5 +5,7 @@ void clockwise(void); //Spin Motor Clockwise
 
 void counterclockwise(void); //Spin Motor CounterClockwise
 
-int rotate_relative(int current_state, int steps);
+unsigned int rotate_relative_azimuth(int current_state, int steps);
+unsigned int rotate_relative_elevation(int current_state, int steps);
+
 #endif

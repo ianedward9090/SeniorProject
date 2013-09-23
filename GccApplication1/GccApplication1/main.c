@@ -9,23 +9,23 @@ int main(void)
 	
 	PORTD = 0;
 	DDRD = 0xff;
-	int current = 0;
+	unsigned int current = 0;
 
 	while(1){
 		//for(i=0; i<50;i++){
 			
-		//	clockwise();
+			//clockwise();
 			
 		//}
 		
 		//for(i=0; i<50;i++){
-		//	counterclockwise();
+			//counterclockwise();
 
 		//}
 
-		current = rotate_relative(current, 200);
+		current = rotate_relative_azimuth(current, -201);
 		_delay_ms(500);
-		current = rotate_relative(current, 200);
+		current = rotate_relative_azimuth(current, 201);
 		_delay_ms(500);
 	}
 

@@ -40,10 +40,10 @@ void counterclockwise(void)
 	_delay_ms(5);
 }
 
-int rotate_relative(int current_state, int steps) {
-	int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
-	int next_state = current_state;
-	int current_upper_PORTD = 0;
+unsigned int rotate_relative_azimuth(int current_state, int steps) {
+	unsigned int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
+	unsigned int next_state = current_state;
+	unsigned int current_upper_PORTD = 0;
 	
 	int i;
 	for (i = 0; i < abs(steps); i++) {
@@ -62,9 +62,37 @@ int rotate_relative(int current_state, int steps) {
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps
-		_delay_ms(10);
+		_delay_ms(5);
 	}
-	
+	PORTD = 0;
 	return current_state;
 }
 
+
+unsigned int rotate_relative_elevation(int current_state, int steps) {
+	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000};
+	unsigned int next_state = current_state;
+	unsigned int current_lower_PORTD = 0;
+	
+	int i;
+	for (i = 0; i < abs(steps); i++) {
+		if (steps < 0) {
+			next_state = current_state - 1;
+			} else if (steps > 0) {
+			next_state = current_state + 1;
+		}
+		
+		// Preserve the upper four bits
+		current_lower_PORTD = PORTD&0x0F;
+		
+		
+		// Set the lower four bits according to state
+		PORTD = states[next_state%4] | current_lower_PORTD;
+		current_state = next_state%4;
+		
+		// Delay 10ms between steps
+		_delay_ms(5);
+	}
+	PORTD = 0;
+	return current_state;
+}
