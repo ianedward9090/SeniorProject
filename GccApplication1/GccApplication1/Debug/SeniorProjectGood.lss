@@ -3,31 +3,31 @@ SeniorProjectGood.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000010  00800100  000001b8  0000022c  2**0
+  0 .data         00000010  00800100  000002cc  00000340  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000001b8  00000000  00000000  00000074  2**1
+  1 .text         000002cc  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  0000023c  2**2
+  2 .stab         000006cc  00000000  00000000  00000350  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000097  00000000  00000000  00000908  2**0
+  3 .stabstr      00000097  00000000  00000000  00000a1c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .comment      0000002f  00000000  00000000  0000099f  2**0
+  4 .comment      0000002f  00000000  00000000  00000ab3  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 00000058  00000000  00000000  000009ce  2**0
+  5 .debug_aranges 00000058  00000000  00000000  00000ae2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000063f  00000000  00000000  00000a26  2**0
+  6 .debug_info   00000680  00000000  00000000  00000b3a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000002af  00000000  00000000  00001065  2**0
+  7 .debug_abbrev 000002dc  00000000  00000000  000011ba  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004ae  00000000  00000000  00001314  2**0
+  8 .debug_line   000004d7  00000000  00000000  00001496  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000c0  00000000  00000000  000017c4  2**2
+  9 .debug_frame  000000fc  00000000  00000000  00001970  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000001ac  00000000  00000000  00001884  2**0
+ 10 .debug_str    000001c4  00000000  00000000  00001a6c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000035b  00000000  00000000  00001a30  2**0
+ 11 .debug_loc    00000468  00000000  00000000  00001c30  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000038  00000000  00000000  00001d8b  2**0
+ 12 .debug_ranges 00000068  00000000  00000000  00002098  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -116,8 +116,8 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	e8 eb       	ldi	r30, 0xB8	; 184
-  a0:	f1 e0       	ldi	r31, 0x01	; 1
+  9e:	ec ec       	ldi	r30, 0xCC	; 204
+  a0:	f2 e0       	ldi	r31, 0x02	; 2
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
   a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
@@ -127,214 +127,439 @@ Disassembly of section .text:
   ae:	b1 07       	cpc	r27, r17
   b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
   b2:	02 d0       	rcall	.+4      	; 0xb8 <main>
-  b4:	7f c0       	rjmp	.+254    	; 0x1b4 <_exit>
+  b4:	09 c1       	rjmp	.+530    	; 0x2c8 <_exit>
 
 000000b6 <__bad_interrupt>:
   b6:	a4 cf       	rjmp	.-184    	; 0x0 <__vectors>
 
 000000b8 <main>:
+#include "motor.h"
+#include <avr/interrupt.h>
+#include <util/delay.h>
 
 int main(void)
 {
+  b8:	8f 92       	push	r8
+  ba:	9f 92       	push	r9
+  bc:	af 92       	push	r10
+  be:	bf 92       	push	r11
+  c0:	cf 92       	push	r12
+  c2:	df 92       	push	r13
+  c4:	ef 92       	push	r14
+  c6:	ff 92       	push	r15
+  c8:	0f 93       	push	r16
+  ca:	1f 93       	push	r17
+  cc:	cf 93       	push	r28
+  ce:	df 93       	push	r29
 	int i=0;
-	
+	int j=0;
 	PORTD = 0;
-  b8:	12 ba       	out	0x12, r1	; 18
+  d0:	12 ba       	out	0x12, r1	; 18
 	DDRD = 0xff;
-  ba:	8f ef       	ldi	r24, 0xFF	; 255
-  bc:	81 bb       	out	0x11, r24	; 17
-	unsigned int current = 0;
-  be:	20 e0       	ldi	r18, 0x00	; 0
-  c0:	30 e0       	ldi	r19, 0x00	; 0
-		//for(i=0; i<50;i++){
-			//counterclockwise();
-
-		//}
-
-		current = rotate_relative_azimuth(current, -201);
-  c2:	67 e3       	ldi	r22, 0x37	; 55
-  c4:	7f ef       	ldi	r23, 0xFF	; 255
-  c6:	82 2f       	mov	r24, r18
-  c8:	93 2f       	mov	r25, r19
-  ca:	17 d0       	rcall	.+46     	; 0xfa <rotate_relative_azimuth>
+  d2:	8f ef       	ldi	r24, 0xFF	; 255
+  d4:	81 bb       	out	0x11, r24	; 17
+  d6:	0f 2e       	mov	r0, r31
+  d8:	f3 e3       	ldi	r31, 0x33	; 51
+  da:	cf 2e       	mov	r12, r31
+  dc:	d1 2c       	mov	r13, r1
+  de:	f0 2d       	mov	r31, r0
+	unsigned int currentazimuth = 0;
+	unsigned int currentelevation = 0;
+	int wise = 2;
+  e0:	02 e0       	ldi	r16, 0x02	; 2
+  e2:	10 e0       	ldi	r17, 0x00	; 0
+	int i=0;
+	int j=0;
+	PORTD = 0;
+	DDRD = 0xff;
+	unsigned int currentazimuth = 0;
+	unsigned int currentelevation = 0;
+  e4:	81 2c       	mov	r8, r1
+  e6:	91 2c       	mov	r9, r1
+{
+	int i=0;
+	int j=0;
+	PORTD = 0;
+	DDRD = 0xff;
+	unsigned int currentazimuth = 0;
+  e8:	e1 2c       	mov	r14, r1
+  ea:	f1 2c       	mov	r15, r1
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  cc:	2f ef       	ldi	r18, 0xFF	; 255
-  ce:	34 e3       	ldi	r19, 0x34	; 52
-  d0:	4c e0       	ldi	r20, 0x0C	; 12
-  d2:	21 50       	subi	r18, 0x01	; 1
-  d4:	30 40       	sbci	r19, 0x00	; 0
-  d6:	40 40       	sbci	r20, 0x00	; 0
-  d8:	e1 f7       	brne	.-8      	; 0xd2 <main+0x1a>
-  da:	00 c0       	rjmp	.+0      	; 0xdc <main+0x24>
-  dc:	00 00       	nop
-		_delay_ms(500);
-		current = rotate_relative_azimuth(current, 201);
-  de:	69 ec       	ldi	r22, 0xC9	; 201
-  e0:	70 e0       	ldi	r23, 0x00	; 0
-  e2:	0b d0       	rcall	.+22     	; 0xfa <rotate_relative_azimuth>
-  e4:	9c 01       	movw	r18, r24
-  e6:	8f ef       	ldi	r24, 0xFF	; 255
-  e8:	94 e3       	ldi	r25, 0x34	; 52
-  ea:	4c e0       	ldi	r20, 0x0C	; 12
-  ec:	81 50       	subi	r24, 0x01	; 1
-  ee:	90 40       	sbci	r25, 0x00	; 0
-  f0:	40 40       	sbci	r20, 0x00	; 0
-  f2:	e1 f7       	brne	.-8      	; 0xec <main+0x34>
-  f4:	00 c0       	rjmp	.+0      	; 0xf6 <main+0x3e>
-  f6:	00 00       	nop
-  f8:	e4 cf       	rjmp	.-56     	; 0xc2 <main+0xa>
+  ec:	0f 2e       	mov	r0, r31
+  ee:	fa e1       	ldi	r31, 0x1A	; 26
+  f0:	af 2e       	mov	r10, r31
+  f2:	b1 2c       	mov	r11, r1
+  f4:	f0 2d       	mov	r31, r0
+	unsigned int currentelevation = 0;
+	int wise = 2;
 
-000000fa <rotate_relative_azimuth>:
+		for(i=0; i<51; i++){
+			currentazimuth = rotate_relative_azimuth(currentazimuth, 2);
+  f6:	62 e0       	ldi	r22, 0x02	; 2
+  f8:	70 e0       	ldi	r23, 0x00	; 0
+  fa:	8e 2d       	mov	r24, r14
+  fc:	9f 2d       	mov	r25, r15
+  fe:	2c d0       	rcall	.+88     	; 0x158 <rotate_relative_azimuth>
+ 100:	7c 01       	movw	r14, r24
+ 102:	8f e0       	ldi	r24, 0x0F	; 15
+ 104:	97 e2       	ldi	r25, 0x27	; 39
+ 106:	01 97       	sbiw	r24, 0x01	; 1
+ 108:	f1 f7       	brne	.-4      	; 0x106 <main+0x4e>
+ 10a:	00 c0       	rjmp	.+0      	; 0x10c <main+0x54>
+ 10c:	00 00       	nop
+ 10e:	e5 01       	movw	r28, r10
+			_delay_ms(5);
+		
+			for(j=0;j<26;j++){
+				currentelevation = rotate_relative_elevation(currentelevation, wise);
+ 110:	b8 01       	movw	r22, r16
+ 112:	88 2d       	mov	r24, r8
+ 114:	99 2d       	mov	r25, r9
+ 116:	7c d0       	rcall	.+248    	; 0x210 <rotate_relative_elevation>
+ 118:	4c 01       	movw	r8, r24
+ 11a:	8f e0       	ldi	r24, 0x0F	; 15
+ 11c:	97 e2       	ldi	r25, 0x27	; 39
+ 11e:	01 97       	sbiw	r24, 0x01	; 1
+ 120:	f1 f7       	brne	.-4      	; 0x11e <main+0x66>
+ 122:	00 c0       	rjmp	.+0      	; 0x124 <main+0x6c>
+ 124:	00 00       	nop
+ 126:	21 97       	sbiw	r28, 0x01	; 1
+
+		for(i=0; i<51; i++){
+			currentazimuth = rotate_relative_azimuth(currentazimuth, 2);
+			_delay_ms(5);
+		
+			for(j=0;j<26;j++){
+ 128:	99 f7       	brne	.-26     	; 0x110 <main+0x58>
+				currentelevation = rotate_relative_elevation(currentelevation, wise);
+				_delay_ms(5);
+			}
+		
+			wise = -wise;
+ 12a:	11 95       	neg	r17
+ 12c:	01 95       	neg	r16
+ 12e:	11 09       	sbc	r17, r1
+ 130:	91 e0       	ldi	r25, 0x01	; 1
+ 132:	c9 1a       	sub	r12, r25
+ 134:	d1 08       	sbc	r13, r1
+	DDRD = 0xff;
+	unsigned int currentazimuth = 0;
+	unsigned int currentelevation = 0;
+	int wise = 2;
+
+		for(i=0; i<51; i++){
+ 136:	f9 f6       	brne	.-66     	; 0xf6 <main+0x3e>
+				_delay_ms(5);
+			}
+		
+			wise = -wise;
+		}
+	PORTD = 0;
+ 138:	12 ba       	out	0x12, r1	; 18
+	return 0;
+
+ 13a:	80 e0       	ldi	r24, 0x00	; 0
+ 13c:	90 e0       	ldi	r25, 0x00	; 0
+ 13e:	df 91       	pop	r29
+ 140:	cf 91       	pop	r28
+ 142:	1f 91       	pop	r17
+ 144:	0f 91       	pop	r16
+ 146:	ff 90       	pop	r15
+ 148:	ef 90       	pop	r14
+ 14a:	df 90       	pop	r13
+ 14c:	cf 90       	pop	r12
+ 14e:	bf 90       	pop	r11
+ 150:	af 90       	pop	r10
+ 152:	9f 90       	pop	r9
+ 154:	8f 90       	pop	r8
+ 156:	08 95       	ret
+
+00000158 <rotate_relative_azimuth>:
 	_delay_ms(5);
 	PORTD = 0b00001010;
 	_delay_ms(5);
 }
 
 unsigned int rotate_relative_azimuth(int current_state, int steps) {
-  fa:	ef 92       	push	r14
-  fc:	ff 92       	push	r15
-  fe:	0f 93       	push	r16
- 100:	1f 93       	push	r17
- 102:	cf 93       	push	r28
- 104:	df 93       	push	r29
- 106:	cd b7       	in	r28, 0x3d	; 61
- 108:	de b7       	in	r29, 0x3e	; 62
- 10a:	28 97       	sbiw	r28, 0x08	; 8
- 10c:	0f b6       	in	r0, 0x3f	; 63
- 10e:	f8 94       	cli
- 110:	de bf       	out	0x3e, r29	; 62
- 112:	0f be       	out	0x3f, r0	; 63
- 114:	cd bf       	out	0x3d, r28	; 61
- 116:	ac 01       	movw	r20, r24
+ 158:	ef 92       	push	r14
+ 15a:	ff 92       	push	r15
+ 15c:	0f 93       	push	r16
+ 15e:	1f 93       	push	r17
+ 160:	cf 93       	push	r28
+ 162:	df 93       	push	r29
+ 164:	cd b7       	in	r28, 0x3d	; 61
+ 166:	de b7       	in	r29, 0x3e	; 62
+ 168:	28 97       	sbiw	r28, 0x08	; 8
+ 16a:	0f b6       	in	r0, 0x3f	; 63
+ 16c:	f8 94       	cli
+ 16e:	de bf       	out	0x3e, r29	; 62
+ 170:	0f be       	out	0x3f, r0	; 63
+ 172:	cd bf       	out	0x3d, r28	; 61
+ 174:	ac 01       	movw	r20, r24
 	unsigned int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
- 118:	88 e0       	ldi	r24, 0x08	; 8
- 11a:	e0 e0       	ldi	r30, 0x00	; 0
- 11c:	f1 e0       	ldi	r31, 0x01	; 1
- 11e:	de 01       	movw	r26, r28
- 120:	11 96       	adiw	r26, 0x01	; 1
- 122:	01 90       	ld	r0, Z+
- 124:	0d 92       	st	X+, r0
- 126:	8a 95       	dec	r24
- 128:	e1 f7       	brne	.-8      	; 0x122 <rotate_relative_azimuth+0x28>
+ 176:	88 e0       	ldi	r24, 0x08	; 8
+ 178:	e0 e0       	ldi	r30, 0x00	; 0
+ 17a:	f1 e0       	ldi	r31, 0x01	; 1
+ 17c:	de 01       	movw	r26, r28
+ 17e:	11 96       	adiw	r26, 0x01	; 1
+ 180:	01 90       	ld	r0, Z+
+ 182:	0d 92       	st	X+, r0
+ 184:	8a 95       	dec	r24
+ 186:	e1 f7       	brne	.-8      	; 0x180 <rotate_relative_azimuth+0x28>
 	unsigned int next_state = current_state;
- 12a:	da 01       	movw	r26, r20
+ 188:	da 01       	movw	r26, r20
 	unsigned int current_upper_PORTD = 0;
 	
 	int i;
 	for (i = 0; i < abs(steps); i++) {
- 12c:	8b 01       	movw	r16, r22
- 12e:	77 23       	and	r23, r23
- 130:	24 f4       	brge	.+8      	; 0x13a <rotate_relative_azimuth+0x40>
- 132:	00 27       	eor	r16, r16
- 134:	11 27       	eor	r17, r17
- 136:	06 1b       	sub	r16, r22
- 138:	17 0b       	sbc	r17, r23
- 13a:	10 16       	cp	r1, r16
- 13c:	11 06       	cpc	r1, r17
- 13e:	54 f5       	brge	.+84     	; 0x194 <rotate_relative_azimuth+0x9a>
- 140:	20 e0       	ldi	r18, 0x00	; 0
- 142:	30 e0       	ldi	r19, 0x00	; 0
+ 18a:	8b 01       	movw	r16, r22
+ 18c:	77 23       	and	r23, r23
+ 18e:	24 f4       	brge	.+8      	; 0x198 <rotate_relative_azimuth+0x40>
+ 190:	00 27       	eor	r16, r16
+ 192:	11 27       	eor	r17, r17
+ 194:	06 1b       	sub	r16, r22
+ 196:	17 0b       	sbc	r17, r23
+ 198:	10 16       	cp	r1, r16
+ 19a:	11 06       	cpc	r1, r17
+ 19c:	54 f5       	brge	.+84     	; 0x1f2 <rotate_relative_azimuth+0x9a>
+ 19e:	20 e0       	ldi	r18, 0x00	; 0
+ 1a0:	30 e0       	ldi	r19, 0x00	; 0
 		if (steps < 0) {
- 144:	77 23       	and	r23, r23
- 146:	1c f4       	brge	.+6      	; 0x14e <rotate_relative_azimuth+0x54>
+ 1a2:	77 23       	and	r23, r23
+ 1a4:	1c f4       	brge	.+6      	; 0x1ac <rotate_relative_azimuth+0x54>
 			next_state = current_state - 1;
- 148:	da 01       	movw	r26, r20
- 14a:	11 97       	sbiw	r26, 0x01	; 1
- 14c:	05 c0       	rjmp	.+10     	; 0x158 <rotate_relative_azimuth+0x5e>
+ 1a6:	da 01       	movw	r26, r20
+ 1a8:	11 97       	sbiw	r26, 0x01	; 1
+ 1aa:	05 c0       	rjmp	.+10     	; 0x1b6 <rotate_relative_azimuth+0x5e>
 		} else if (steps > 0) {
- 14e:	16 16       	cp	r1, r22
- 150:	17 06       	cpc	r1, r23
- 152:	14 f4       	brge	.+4      	; 0x158 <rotate_relative_azimuth+0x5e>
+ 1ac:	16 16       	cp	r1, r22
+ 1ae:	17 06       	cpc	r1, r23
+ 1b0:	14 f4       	brge	.+4      	; 0x1b6 <rotate_relative_azimuth+0x5e>
 			next_state = current_state + 1;
- 154:	da 01       	movw	r26, r20
- 156:	11 96       	adiw	r26, 0x01	; 1
+ 1b2:	da 01       	movw	r26, r20
+ 1b4:	11 96       	adiw	r26, 0x01	; 1
 		}
 		
 		// Preserve the upper four bits
 		current_upper_PORTD = PORTD&0xF0;
- 158:	42 b3       	in	r20, 0x12	; 18
+ 1b6:	42 b3       	in	r20, 0x12	; 18
 		
 		
 		// Set the lower four bits according to state
 		PORTD = states[next_state%4] | current_upper_PORTD;
- 15a:	cd 01       	movw	r24, r26
- 15c:	83 70       	andi	r24, 0x03	; 3
- 15e:	99 27       	eor	r25, r25
- 160:	fc 01       	movw	r30, r24
- 162:	ee 0f       	add	r30, r30
- 164:	ff 1f       	adc	r31, r31
- 166:	ee 24       	eor	r14, r14
- 168:	e3 94       	inc	r14
- 16a:	f1 2c       	mov	r15, r1
- 16c:	ec 0e       	add	r14, r28
- 16e:	fd 1e       	adc	r15, r29
- 170:	ee 0d       	add	r30, r14
- 172:	ff 1d       	adc	r31, r15
+ 1b8:	cd 01       	movw	r24, r26
+ 1ba:	83 70       	andi	r24, 0x03	; 3
+ 1bc:	99 27       	eor	r25, r25
+ 1be:	fc 01       	movw	r30, r24
+ 1c0:	ee 0f       	add	r30, r30
+ 1c2:	ff 1f       	adc	r31, r31
+ 1c4:	ee 24       	eor	r14, r14
+ 1c6:	e3 94       	inc	r14
+ 1c8:	f1 2c       	mov	r15, r1
+ 1ca:	ec 0e       	add	r14, r28
+ 1cc:	fd 1e       	adc	r15, r29
+ 1ce:	ee 0d       	add	r30, r14
+ 1d0:	ff 1d       	adc	r31, r15
 		} else if (steps > 0) {
 			next_state = current_state + 1;
 		}
 		
 		// Preserve the upper four bits
 		current_upper_PORTD = PORTD&0xF0;
- 174:	40 7f       	andi	r20, 0xF0	; 240
+ 1d2:	40 7f       	andi	r20, 0xF0	; 240
 		
 		
 		// Set the lower four bits according to state
 		PORTD = states[next_state%4] | current_upper_PORTD;
- 176:	50 81       	ld	r21, Z
- 178:	45 2b       	or	r20, r21
- 17a:	42 bb       	out	0x12, r20	; 18
+ 1d4:	50 81       	ld	r21, Z
+ 1d6:	45 2b       	or	r20, r21
+ 1d8:	42 bb       	out	0x12, r20	; 18
 		current_state = next_state%4;
- 17c:	ac 01       	movw	r20, r24
- 17e:	8f e0       	ldi	r24, 0x0F	; 15
- 180:	97 e2       	ldi	r25, 0x27	; 39
- 182:	01 97       	sbiw	r24, 0x01	; 1
- 184:	f1 f7       	brne	.-4      	; 0x182 <rotate_relative_azimuth+0x88>
- 186:	00 c0       	rjmp	.+0      	; 0x188 <rotate_relative_azimuth+0x8e>
- 188:	00 00       	nop
+ 1da:	ac 01       	movw	r20, r24
+ 1dc:	8f e0       	ldi	r24, 0x0F	; 15
+ 1de:	97 e2       	ldi	r25, 0x27	; 39
+ 1e0:	01 97       	sbiw	r24, 0x01	; 1
+ 1e2:	f1 f7       	brne	.-4      	; 0x1e0 <rotate_relative_azimuth+0x88>
+ 1e4:	00 c0       	rjmp	.+0      	; 0x1e6 <rotate_relative_azimuth+0x8e>
+ 1e6:	00 00       	nop
 	unsigned int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
 	unsigned int next_state = current_state;
 	unsigned int current_upper_PORTD = 0;
 	
 	int i;
 	for (i = 0; i < abs(steps); i++) {
- 18a:	2f 5f       	subi	r18, 0xFF	; 255
- 18c:	3f 4f       	sbci	r19, 0xFF	; 255
- 18e:	20 17       	cp	r18, r16
- 190:	31 07       	cpc	r19, r17
- 192:	c1 f6       	brne	.-80     	; 0x144 <rotate_relative_azimuth+0x4a>
-		current_state = next_state%4;
-		
+ 1e8:	2f 5f       	subi	r18, 0xFF	; 255
+ 1ea:	3f 4f       	sbci	r19, 0xFF	; 255
+ 1ec:	20 17       	cp	r18, r16
+ 1ee:	31 07       	cpc	r19, r17
+ 1f0:	c1 f6       	brne	.-80     	; 0x1a2 <rotate_relative_azimuth+0x4a>
 		// Delay 10ms between steps
 		_delay_ms(5);
 	}
-	PORTD = 0;
- 194:	12 ba       	out	0x12, r1	; 18
+	//PORTD = 0;
 	return current_state;
 }
- 196:	84 2f       	mov	r24, r20
- 198:	95 2f       	mov	r25, r21
- 19a:	28 96       	adiw	r28, 0x08	; 8
- 19c:	0f b6       	in	r0, 0x3f	; 63
- 19e:	f8 94       	cli
- 1a0:	de bf       	out	0x3e, r29	; 62
- 1a2:	0f be       	out	0x3f, r0	; 63
- 1a4:	cd bf       	out	0x3d, r28	; 61
- 1a6:	df 91       	pop	r29
- 1a8:	cf 91       	pop	r28
- 1aa:	1f 91       	pop	r17
- 1ac:	0f 91       	pop	r16
- 1ae:	ff 90       	pop	r15
- 1b0:	ef 90       	pop	r14
- 1b2:	08 95       	ret
+ 1f2:	84 2f       	mov	r24, r20
+ 1f4:	95 2f       	mov	r25, r21
+ 1f6:	28 96       	adiw	r28, 0x08	; 8
+ 1f8:	0f b6       	in	r0, 0x3f	; 63
+ 1fa:	f8 94       	cli
+ 1fc:	de bf       	out	0x3e, r29	; 62
+ 1fe:	0f be       	out	0x3f, r0	; 63
+ 200:	cd bf       	out	0x3d, r28	; 61
+ 202:	df 91       	pop	r29
+ 204:	cf 91       	pop	r28
+ 206:	1f 91       	pop	r17
+ 208:	0f 91       	pop	r16
+ 20a:	ff 90       	pop	r15
+ 20c:	ef 90       	pop	r14
+ 20e:	08 95       	ret
 
-000001b4 <_exit>:
- 1b4:	f8 94       	cli
+00000210 <rotate_relative_elevation>:
 
-000001b6 <__stop_program>:
- 1b6:	ff cf       	rjmp	.-2      	; 0x1b6 <__stop_program>
+
+unsigned int rotate_relative_elevation(int current_state, int steps) {
+ 210:	ef 92       	push	r14
+ 212:	ff 92       	push	r15
+ 214:	0f 93       	push	r16
+ 216:	1f 93       	push	r17
+ 218:	cf 93       	push	r28
+ 21a:	df 93       	push	r29
+ 21c:	cd b7       	in	r28, 0x3d	; 61
+ 21e:	de b7       	in	r29, 0x3e	; 62
+ 220:	28 97       	sbiw	r28, 0x08	; 8
+ 222:	0f b6       	in	r0, 0x3f	; 63
+ 224:	f8 94       	cli
+ 226:	de bf       	out	0x3e, r29	; 62
+ 228:	0f be       	out	0x3f, r0	; 63
+ 22a:	cd bf       	out	0x3d, r28	; 61
+ 22c:	ac 01       	movw	r20, r24
+	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000};
+ 22e:	88 e0       	ldi	r24, 0x08	; 8
+ 230:	e8 e0       	ldi	r30, 0x08	; 8
+ 232:	f1 e0       	ldi	r31, 0x01	; 1
+ 234:	de 01       	movw	r26, r28
+ 236:	11 96       	adiw	r26, 0x01	; 1
+ 238:	01 90       	ld	r0, Z+
+ 23a:	0d 92       	st	X+, r0
+ 23c:	8a 95       	dec	r24
+ 23e:	e1 f7       	brne	.-8      	; 0x238 <rotate_relative_elevation+0x28>
+	unsigned int next_state = current_state;
+ 240:	da 01       	movw	r26, r20
+	unsigned int current_lower_PORTD = 0;
+	
+	int i;
+	for (i = 0; i < abs(steps); i++) {
+ 242:	8b 01       	movw	r16, r22
+ 244:	77 23       	and	r23, r23
+ 246:	24 f4       	brge	.+8      	; 0x250 <rotate_relative_elevation+0x40>
+ 248:	00 27       	eor	r16, r16
+ 24a:	11 27       	eor	r17, r17
+ 24c:	06 1b       	sub	r16, r22
+ 24e:	17 0b       	sbc	r17, r23
+ 250:	10 16       	cp	r1, r16
+ 252:	11 06       	cpc	r1, r17
+ 254:	54 f5       	brge	.+84     	; 0x2aa <rotate_relative_elevation+0x9a>
+ 256:	20 e0       	ldi	r18, 0x00	; 0
+ 258:	30 e0       	ldi	r19, 0x00	; 0
+		if (steps < 0) {
+ 25a:	77 23       	and	r23, r23
+ 25c:	1c f4       	brge	.+6      	; 0x264 <rotate_relative_elevation+0x54>
+			next_state = current_state - 1;
+ 25e:	da 01       	movw	r26, r20
+ 260:	11 97       	sbiw	r26, 0x01	; 1
+ 262:	05 c0       	rjmp	.+10     	; 0x26e <rotate_relative_elevation+0x5e>
+			} else if (steps > 0) {
+ 264:	16 16       	cp	r1, r22
+ 266:	17 06       	cpc	r1, r23
+ 268:	14 f4       	brge	.+4      	; 0x26e <rotate_relative_elevation+0x5e>
+			next_state = current_state + 1;
+ 26a:	da 01       	movw	r26, r20
+ 26c:	11 96       	adiw	r26, 0x01	; 1
+		};
+		
+		// Preserve the upper four bits
+		current_lower_PORTD = PORTD&0x0F;
+ 26e:	42 b3       	in	r20, 0x12	; 18
+		
+		
+		// Set the lower four bits according to state
+		PORTD = states[next_state%4] | current_lower_PORTD;
+ 270:	cd 01       	movw	r24, r26
+ 272:	83 70       	andi	r24, 0x03	; 3
+ 274:	99 27       	eor	r25, r25
+ 276:	fc 01       	movw	r30, r24
+ 278:	ee 0f       	add	r30, r30
+ 27a:	ff 1f       	adc	r31, r31
+ 27c:	ee 24       	eor	r14, r14
+ 27e:	e3 94       	inc	r14
+ 280:	f1 2c       	mov	r15, r1
+ 282:	ec 0e       	add	r14, r28
+ 284:	fd 1e       	adc	r15, r29
+ 286:	ee 0d       	add	r30, r14
+ 288:	ff 1d       	adc	r31, r15
+			} else if (steps > 0) {
+			next_state = current_state + 1;
+		};
+		
+		// Preserve the upper four bits
+		current_lower_PORTD = PORTD&0x0F;
+ 28a:	4f 70       	andi	r20, 0x0F	; 15
+		
+		
+		// Set the lower four bits according to state
+		PORTD = states[next_state%4] | current_lower_PORTD;
+ 28c:	50 81       	ld	r21, Z
+ 28e:	45 2b       	or	r20, r21
+ 290:	42 bb       	out	0x12, r20	; 18
+		current_state = next_state%4;
+ 292:	ac 01       	movw	r20, r24
+ 294:	8f e0       	ldi	r24, 0x0F	; 15
+ 296:	97 e2       	ldi	r25, 0x27	; 39
+ 298:	01 97       	sbiw	r24, 0x01	; 1
+ 29a:	f1 f7       	brne	.-4      	; 0x298 <rotate_relative_elevation+0x88>
+ 29c:	00 c0       	rjmp	.+0      	; 0x29e <rotate_relative_elevation+0x8e>
+ 29e:	00 00       	nop
+	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000};
+	unsigned int next_state = current_state;
+	unsigned int current_lower_PORTD = 0;
+	
+	int i;
+	for (i = 0; i < abs(steps); i++) {
+ 2a0:	2f 5f       	subi	r18, 0xFF	; 255
+ 2a2:	3f 4f       	sbci	r19, 0xFF	; 255
+ 2a4:	20 17       	cp	r18, r16
+ 2a6:	31 07       	cpc	r19, r17
+ 2a8:	c1 f6       	brne	.-80     	; 0x25a <rotate_relative_elevation+0x4a>
+		// Delay 10ms between steps
+		_delay_ms(5);
+	}
+	//PORTD = 0;
+	return current_state;
+}
+ 2aa:	84 2f       	mov	r24, r20
+ 2ac:	95 2f       	mov	r25, r21
+ 2ae:	28 96       	adiw	r28, 0x08	; 8
+ 2b0:	0f b6       	in	r0, 0x3f	; 63
+ 2b2:	f8 94       	cli
+ 2b4:	de bf       	out	0x3e, r29	; 62
+ 2b6:	0f be       	out	0x3f, r0	; 63
+ 2b8:	cd bf       	out	0x3d, r28	; 61
+ 2ba:	df 91       	pop	r29
+ 2bc:	cf 91       	pop	r28
+ 2be:	1f 91       	pop	r17
+ 2c0:	0f 91       	pop	r16
+ 2c2:	ff 90       	pop	r15
+ 2c4:	ef 90       	pop	r14
+ 2c6:	08 95       	ret
+
+000002c8 <_exit>:
+ 2c8:	f8 94       	cli
+
+000002ca <__stop_program>:
+ 2ca:	ff cf       	rjmp	.-2      	; 0x2ca <__stop_program>

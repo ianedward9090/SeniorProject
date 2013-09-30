@@ -64,7 +64,7 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 		// Delay 10ms between steps
 		_delay_ms(5);
 	}
-	PORTD = 0;
+	//PORTD = 0;
 	return current_state;
 }
 
@@ -80,7 +80,7 @@ unsigned int rotate_relative_elevation(int current_state, int steps) {
 			next_state = current_state - 1;
 			} else if (steps > 0) {
 			next_state = current_state + 1;
-		}
+		};
 		
 		// Preserve the upper four bits
 		current_lower_PORTD = PORTD&0x0F;
@@ -93,6 +93,6 @@ unsigned int rotate_relative_elevation(int current_state, int steps) {
 		// Delay 10ms between steps
 		_delay_ms(5);
 	}
-	PORTD = 0;
+	//PORTD = 0;
 	return current_state;
 }
