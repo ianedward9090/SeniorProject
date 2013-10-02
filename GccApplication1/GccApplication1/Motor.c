@@ -91,7 +91,7 @@ unsigned int rotate_relative_elevation(int current_state, int steps) {
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps
-		_delay_ms(5);
+		_delay_ms(50);
 	}
 	//PORTD = 0;
 	return current_state;
