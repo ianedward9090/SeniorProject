@@ -3,31 +3,31 @@ SeniorProjectGood.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000000a  00800100  000001c8  0000023c  2**0
+  0 .data         00000014  00800100  00000206  0000027a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000001c8  00000000  00000000  00000074  2**1
+  1 .text         00000206  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  00000248  2**2
+  2 .stab         000006cc  00000000  00000000  00000290  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000097  00000000  00000000  00000914  2**0
+  3 .stabstr      00000097  00000000  00000000  0000095c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .comment      0000002f  00000000  00000000  000009ab  2**0
+  4 .comment      0000002f  00000000  00000000  000009f3  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 00000098  00000000  00000000  000009da  2**0
+  5 .debug_aranges 000000a0  00000000  00000000  00000a22  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000a71  00000000  00000000  00000a72  2**0
+  6 .debug_info   00000b85  00000000  00000000  00000ac2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000491  00000000  00000000  000014e3  2**0
+  7 .debug_abbrev 000004ce  00000000  00000000  00001647  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000071a  00000000  00000000  00001974  2**0
+  8 .debug_line   00000767  00000000  00000000  00001b15  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000138  00000000  00000000  00002090  2**2
+  9 .debug_frame  00000148  00000000  00000000  0000227c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000225  00000000  00000000  000021c8  2**0
+ 10 .debug_str    0000022e  00000000  00000000  000023c4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000003e8  00000000  00000000  000023ed  2**0
+ 11 .debug_loc    00000430  00000000  00000000  000025f2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000068  00000000  00000000  000027d5  2**0
+ 12 .debug_ranges 00000070  00000000  00000000  00002a22  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -116,18 +116,18 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	e8 ec       	ldi	r30, 0xC8	; 200
-  a0:	f1 e0       	ldi	r31, 0x01	; 1
+  9e:	e6 e0       	ldi	r30, 0x06	; 6
+  a0:	f2 e0       	ldi	r31, 0x02	; 2
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
   a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
   a8:	07 90       	elpm	r0, Z+
   aa:	0d 92       	st	X+, r0
-  ac:	aa 30       	cpi	r26, 0x0A	; 10
+  ac:	a4 31       	cpi	r26, 0x14	; 20
   ae:	b1 07       	cpc	r27, r17
   b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
-  b2:	55 d0       	rcall	.+170    	; 0x15e <main>
-  b4:	87 c0       	rjmp	.+270    	; 0x1c4 <_exit>
+  b2:	5f d0       	rcall	.+190    	; 0x172 <main>
+  b4:	a6 c0       	rjmp	.+332    	; 0x202 <_exit>
 
 000000b6 <__bad_interrupt>:
   b6:	a4 cf       	rjmp	.-184    	; 0x0 <__vectors>
@@ -248,81 +248,129 @@ return 0;
  15a:	90 e0       	ldi	r25, 0x00	; 0
  15c:	08 95       	ret
 
-0000015e <main>:
-#include <util/delay.h>
+0000015e <nextline>:
+
+void nextline(void){
+	
+	transmitchar(0x9F);
+ 15e:	8f e9       	ldi	r24, 0x9F	; 159
+ 160:	b5 df       	rcall	.-150    	; 0xcc <transmitchar>
+	transmitchar(0xFF);
+ 162:	8f ef       	ldi	r24, 0xFF	; 255
+ 164:	b3 df       	rcall	.-154    	; 0xcc <transmitchar>
+	transmitchar(0x00);
+ 166:	80 e0       	ldi	r24, 0x00	; 0
+ 168:	b1 df       	rcall	.-158    	; 0xcc <transmitchar>
+	transmitchar(0x01);
+ 16a:	81 e0       	ldi	r24, 0x01	; 1
+ 16c:	af df       	rcall	.-162    	; 0xcc <transmitchar>
+	transmitchar(0xFE);
+ 16e:	8e ef       	ldi	r24, 0xFE	; 254
+ 170:	ad cf       	rjmp	.-166    	; 0xcc <transmitchar>
+
+00000172 <main>:
+
 int main(void)
 {
 	//int i=0;
-	int j=0;
+	int j = 0;
 	PORTD = 0; //for motor control
- 15e:	12 ba       	out	0x12, r1	; 18
+ 172:	12 ba       	out	0x12, r1	; 18
 	DDRD = 0xff;
- 160:	8f ef       	ldi	r24, 0xFF	; 255
- 162:	81 bb       	out	0x11, r24	; 17
-	PORTE = 0;
- 164:	13 b8       	out	0x03, r1	; 3
-	DDRE = 0xff;
- 166:	82 b9       	out	0x02, r24	; 2
- 168:	2f ef       	ldi	r18, 0xFF	; 255
- 16a:	84 e3       	ldi	r24, 0x34	; 52
- 16c:	9c e0       	ldi	r25, 0x0C	; 12
- 16e:	21 50       	subi	r18, 0x01	; 1
- 170:	80 40       	sbci	r24, 0x00	; 0
- 172:	90 40       	sbci	r25, 0x00	; 0
- 174:	e1 f7       	brne	.-8      	; 0x16e <main+0x10>
- 176:	00 c0       	rjmp	.+0      	; 0x178 <main+0x1a>
- 178:	00 00       	nop
+ 174:	8f ef       	ldi	r24, 0xFF	; 255
+ 176:	81 bb       	out	0x11, r24	; 17
+	DDRE = 0x00;
+ 178:	12 b8       	out	0x02, r1	; 2
+	PORTE = (1<<PE6) | (1<<PE7);
+ 17a:	80 ec       	ldi	r24, 0xC0	; 192
+ 17c:	83 b9       	out	0x03, r24	; 3
+ 17e:	2f ef       	ldi	r18, 0xFF	; 255
+ 180:	84 e3       	ldi	r24, 0x34	; 52
+ 182:	9c e0       	ldi	r25, 0x0C	; 12
+ 184:	21 50       	subi	r18, 0x01	; 1
+ 186:	80 40       	sbci	r24, 0x00	; 0
+ 188:	90 40       	sbci	r25, 0x00	; 0
+ 18a:	e1 f7       	brne	.-8      	; 0x184 <main+0x12>
+ 18c:	00 c0       	rjmp	.+0      	; 0x18e <main+0x1c>
+ 18e:	00 00       	nop
 	unsigned int currentazimuth = 0; //keeping track of azimuth
 	unsigned int currentelevation = 0;//keeping track of elevation
 	unsigned int baud = 9600;
 	int wise = 2; //how many steps to take
 	_delay_ms(500);
 	USART_Init (baud);
- 17a:	80 e8       	ldi	r24, 0x80	; 128
- 17c:	95 e2       	ldi	r25, 0x25	; 37
- 17e:	9c df       	rcall	.-200    	; 0xb8 <USART_Init>
- 180:	2f ef       	ldi	r18, 0xFF	; 255
- 182:	82 e5       	ldi	r24, 0x52	; 82
- 184:	97 e0       	ldi	r25, 0x07	; 7
- 186:	21 50       	subi	r18, 0x01	; 1
- 188:	80 40       	sbci	r24, 0x00	; 0
- 18a:	90 40       	sbci	r25, 0x00	; 0
- 18c:	e1 f7       	brne	.-8      	; 0x186 <main+0x28>
- 18e:	00 c0       	rjmp	.+0      	; 0x190 <main+0x32>
- 190:	00 00       	nop
+ 190:	80 e8       	ldi	r24, 0x80	; 128
+ 192:	95 e2       	ldi	r25, 0x25	; 37
+ 194:	91 df       	rcall	.-222    	; 0xb8 <USART_Init>
+ 196:	2f ef       	ldi	r18, 0xFF	; 255
+ 198:	82 e5       	ldi	r24, 0x52	; 82
+ 19a:	97 e0       	ldi	r25, 0x07	; 7
+ 19c:	21 50       	subi	r18, 0x01	; 1
+ 19e:	80 40       	sbci	r24, 0x00	; 0
+ 1a0:	90 40       	sbci	r25, 0x00	; 0
+ 1a2:	e1 f7       	brne	.-8      	; 0x19c <main+0x2a>
+ 1a4:	00 c0       	rjmp	.+0      	; 0x1a6 <main+0x34>
+ 1a6:	00 00       	nop
 	_delay_ms(300);
 	LCD_Init();
- 192:	b6 df       	rcall	.-148    	; 0x100 <LCD_Init>
- 194:	2f ef       	ldi	r18, 0xFF	; 255
- 196:	80 e7       	ldi	r24, 0x70	; 112
- 198:	92 e0       	ldi	r25, 0x02	; 2
- 19a:	21 50       	subi	r18, 0x01	; 1
- 19c:	80 40       	sbci	r24, 0x00	; 0
- 19e:	90 40       	sbci	r25, 0x00	; 0
- 1a0:	e1 f7       	brne	.-8      	; 0x19a <main+0x3c>
- 1a2:	00 c0       	rjmp	.+0      	; 0x1a4 <main+0x46>
- 1a4:	00 00       	nop
+ 1a8:	ab df       	rcall	.-170    	; 0x100 <LCD_Init>
+ 1aa:	2f ef       	ldi	r18, 0xFF	; 255
+ 1ac:	80 e7       	ldi	r24, 0x70	; 112
+ 1ae:	92 e0       	ldi	r25, 0x02	; 2
+ 1b0:	21 50       	subi	r18, 0x01	; 1
+ 1b2:	80 40       	sbci	r24, 0x00	; 0
+ 1b4:	90 40       	sbci	r25, 0x00	; 0
+ 1b6:	e1 f7       	brne	.-8      	; 0x1b0 <main+0x3e>
+ 1b8:	00 c0       	rjmp	.+0      	; 0x1ba <main+0x48>
+ 1ba:	00 00       	nop
 	_delay_ms(100);
+	transmitstring("Data Points?",12);
+ 1bc:	6c e0       	ldi	r22, 0x0C	; 12
+ 1be:	70 e0       	ldi	r23, 0x00	; 0
+ 1c0:	80 e0       	ldi	r24, 0x00	; 0
+ 1c2:	91 e0       	ldi	r25, 0x01	; 1
+ 1c4:	87 df       	rcall	.-242    	; 0xd4 <transmitstring>
+	nextline();
+ 1c6:	cb df       	rcall	.-106    	; 0x15e <nextline>
 	while(1){
-	transmitstring("YOUR MOM", 8);
- 1a6:	68 e0       	ldi	r22, 0x08	; 8
- 1a8:	70 e0       	ldi	r23, 0x00	; 0
- 1aa:	80 e0       	ldi	r24, 0x00	; 0
- 1ac:	91 e0       	ldi	r25, 0x01	; 1
- 1ae:	92 df       	rcall	.-220    	; 0xd4 <transmitstring>
- 1b0:	2f ef       	ldi	r18, 0xFF	; 255
- 1b2:	84 e3       	ldi	r24, 0x34	; 52
- 1b4:	9c e0       	ldi	r25, 0x0C	; 12
- 1b6:	21 50       	subi	r18, 0x01	; 1
- 1b8:	80 40       	sbci	r24, 0x00	; 0
- 1ba:	90 40       	sbci	r25, 0x00	; 0
- 1bc:	e1 f7       	brne	.-8      	; 0x1b6 <main+0x58>
- 1be:	00 c0       	rjmp	.+0      	; 0x1c0 <main+0x62>
- 1c0:	00 00       	nop
- 1c2:	f1 cf       	rjmp	.-30     	; 0x1a6 <main+0x48>
+			if (RED_BUTTON){
+ 1c8:	0f 99       	sbic	0x01, 7	; 1
+ 1ca:	0f c0       	rjmp	.+30     	; 0x1ea <main+0x78>
+				transmitstring("boobs",5);
+ 1cc:	65 e0       	ldi	r22, 0x05	; 5
+ 1ce:	70 e0       	ldi	r23, 0x00	; 0
+ 1d0:	8d e0       	ldi	r24, 0x0D	; 13
+ 1d2:	91 e0       	ldi	r25, 0x01	; 1
+ 1d4:	7f df       	rcall	.-258    	; 0xd4 <transmitstring>
+ 1d6:	2f ef       	ldi	r18, 0xFF	; 255
+ 1d8:	89 e6       	ldi	r24, 0x69	; 105
+ 1da:	98 e1       	ldi	r25, 0x18	; 24
+ 1dc:	21 50       	subi	r18, 0x01	; 1
+ 1de:	80 40       	sbci	r24, 0x00	; 0
+ 1e0:	90 40       	sbci	r25, 0x00	; 0
+ 1e2:	e1 f7       	brne	.-8      	; 0x1dc <main+0x6a>
+ 1e4:	00 c0       	rjmp	.+0      	; 0x1e6 <main+0x74>
+ 1e6:	00 00       	nop
+ 1e8:	ef cf       	rjmp	.-34     	; 0x1c8 <main+0x56>
+				_delay_ms(1000);
+				} else {
+				
+				transmitchar('b');
+ 1ea:	82 e6       	ldi	r24, 0x62	; 98
+ 1ec:	6f df       	rcall	.-290    	; 0xcc <transmitchar>
+ 1ee:	2f ef       	ldi	r18, 0xFF	; 255
+ 1f0:	89 e6       	ldi	r24, 0x69	; 105
+ 1f2:	98 e1       	ldi	r25, 0x18	; 24
+ 1f4:	21 50       	subi	r18, 0x01	; 1
+ 1f6:	80 40       	sbci	r24, 0x00	; 0
+ 1f8:	90 40       	sbci	r25, 0x00	; 0
+ 1fa:	e1 f7       	brne	.-8      	; 0x1f4 <main+0x82>
+ 1fc:	00 c0       	rjmp	.+0      	; 0x1fe <main+0x8c>
+ 1fe:	00 00       	nop
+ 200:	e3 cf       	rjmp	.-58     	; 0x1c8 <main+0x56>
 
-000001c4 <_exit>:
- 1c4:	f8 94       	cli
+00000202 <_exit>:
+ 202:	f8 94       	cli
 
-000001c6 <__stop_program>:
- 1c6:	ff cf       	rjmp	.-2      	; 0x1c6 <__stop_program>
+00000204 <__stop_program>:
+ 204:	ff cf       	rjmp	.-2      	; 0x204 <__stop_program>

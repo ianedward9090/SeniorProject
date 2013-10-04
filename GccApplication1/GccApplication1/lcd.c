@@ -70,4 +70,13 @@ int LCD_Init (void){
 return 0;
 }
 
+void nextline(void){
+	
+	transmitchar(0x9F);
+	transmitchar(0xFF);
+	transmitchar(0x00);
+	transmitchar(0x01);
+	transmitchar(0xFE);
+}
+
 
