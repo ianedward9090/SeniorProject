@@ -12,6 +12,8 @@ int main(void)
 {
 	//int i=0;
 	int j = 0;
+	int points = 0;
+	int datapoints[] = {100,250,500,900};
 	PORTD = 0; //for motor control
 	DDRD = 0xff;
 	DDRE = 0x00;
@@ -25,11 +27,11 @@ int main(void)
 	_delay_ms(300);
 	LCD_Init();
 	_delay_ms(100);
-	transmitstring("Data Points?",12);
-	nextline();
+	transmitstring("Data Points:",12);
+	
 	while(1){
 			if (RED_BUTTON){
-				transmitstring("boobs",5);
+				transmitstring(datapoints[points],3);
 				_delay_ms(1000);
 				} else {
 				
