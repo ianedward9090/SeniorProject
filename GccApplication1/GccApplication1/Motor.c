@@ -18,32 +18,32 @@
 
 void clockwise(void)
 {
-	PORTD = 0b00001010;
+	PORTC = 0b00001010;
 	_delay_ms(5);
-	PORTD = 0b00001001;
+	PORTC = 0b00001001;
 	_delay_ms(5);
-	PORTD = 0b00000101;
+	PORTC = 0b00000101;
 	_delay_ms(5);
-	PORTD = 0b00000110;
+	PORTC = 0b00000110;
 	_delay_ms(5);
 }
 
 void counterclockwise(void)
 {
-	PORTD = 0b00000110;
+	PORTC = 0b00000110;
 	_delay_ms(5);
-	PORTD = 0b00000101;
+	PORTC = 0b00000101;
 	_delay_ms(5);
-	PORTD = 0b00001001;
+	PORTC = 0b00001001;
 	_delay_ms(5);
-	PORTD = 0b00001010;
+	PORTC = 0b00001010;
 	_delay_ms(5);
 }
 
 unsigned int rotate_relative_azimuth(int current_state, int steps) {
 	unsigned int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
 	unsigned int next_state = current_state;
-	unsigned int current_upper_PORTD = 0;
+	unsigned int current_upper_PORTC = 0;
 	
 	int i;
 	for (i = 0; i < abs(steps); i++) {
@@ -54,11 +54,11 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 		}
 		
 		// Preserve the upper four bits
-		current_upper_PORTD = PORTD&0xF0;
+		current_upper_PORTC = PORTC&0xF0;
 		
 		
 		// Set the lower four bits according to state
-		PORTD = states[next_state%4] | current_upper_PORTD;
+		PORTC = states[next_state%4] | current_upper_PORTC;
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps
@@ -72,7 +72,7 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 unsigned int rotate_relative_elevation(int current_state, int steps) {
 	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000};
 	unsigned int next_state = current_state;
-	unsigned int current_lower_PORTD = 0;
+	unsigned int current_lower_PORTC = 0;
 	
 	int i;
 	for (i = 0; i < abs(steps); i++) {
@@ -83,11 +83,11 @@ unsigned int rotate_relative_elevation(int current_state, int steps) {
 		};
 		
 		// Preserve the upper four bits
-		current_lower_PORTD = PORTD&0x0F;
+		current_lower_PORTC = PORTC&0x0F;
 		
 		
 		// Set the lower four bits according to state
-		PORTD = states[next_state%4] | current_lower_PORTD;
+		PORTC = states[next_state%4] | current_lower_PORTC;
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps

@@ -80,3 +80,12 @@ void nextline(void){
 }
 
 
+void clearlcd(void){
+	transmitchar(0x9F);
+	_delay_ms(5);
+	transmitchar(0x65);
+	_delay_ms(5);
+	transmitchar(0x65);
+	_delay_ms(5);
+	transmitchar(0xFE);
+}
