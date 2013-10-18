@@ -2,9 +2,12 @@
 
 #include "motor.h"
 #include "lcd.h"
+#include "memory.h"
+#include "adc.h"
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define RED_BUTTON !(PINE & (1 << PE7))
 #define BLACK_BUTTON !(PINE & (1 << PE6))

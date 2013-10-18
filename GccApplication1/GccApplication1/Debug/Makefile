@@ -39,7 +39,7 @@ C_SRCS +=  \
 ../adc.c \
 ../lcd.c \
 ../main.c \
-../Memory.c \
+../memory.c \
 ../motor.c
 
 
@@ -53,28 +53,28 @@ OBJS +=  \
 adc.o \
 lcd.o \
 main.o \
-Memory.o \
+memory.o \
 motor.o
 
 OBJS_AS_ARGS +=  \
 adc.o \
 lcd.o \
 main.o \
-Memory.o \
+memory.o \
 motor.o
 
 C_DEPS +=  \
 adc.d \
 lcd.d \
 main.d \
-Memory.d \
+memory.d \
 motor.d
 
 C_DEPS_AS_ARGS +=  \
 adc.d \
 lcd.d \
 main.d \
-Memory.d \
+memory.d \
 motor.d
 
 OUTPUT_FILE_PATH +=SeniorProjectGood.elf

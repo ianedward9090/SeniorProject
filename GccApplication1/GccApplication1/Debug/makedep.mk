@@ -8,7 +8,7 @@ lcd.c
 
 main.c
 
-Memory.c
+memory.c
 
 motor.c
 

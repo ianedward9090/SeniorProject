@@ -22,8 +22,19 @@ Discarded input sections
                 0x00000000        0x8 lcd.o
  .text          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
- .text          0x00000000        0x0 Memory.o
- .bss           0x00000000        0x0 Memory.o
+ .text          0x00000000        0x0 memory.o
+ .bss           0x00000000        0x0 memory.o
+ .text.i2c_start_proticol
+                0x00000000       0x28 memory.o
+ .text.stopi2c  0x00000000        0x8 memory.o
+ .text.i2c_send_address
+                0x00000000       0x1a memory.o
+ .text.i2c_send_data
+                0x00000000       0x18 memory.o
+ .text.EEPROM_write_datapoint
+                0x00000000       0xac memory.o
+ .text.EEPROM_address
+                0x00000000       0x32 memory.o
  .text          0x00000000        0x0 motor.o
  .bss           0x00000000        0x0 motor.o
  .text.clockwise
@@ -96,7 +107,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 LOAD adc.o
 LOAD lcd.o
 LOAD main.o
-LOAD Memory.o
+LOAD memory.o
 LOAD motor.o
 START GROUP
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr51\libm.a
@@ -356,7 +367,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  .data          0x00800100        0x0 adc.o
  .data          0x00800100        0x0 lcd.o
  .data          0x00800100        0x0 main.o
- .data          0x00800100        0x0 Memory.o
+ .data          0x00800100        0x0 memory.o
  .data          0x00800100        0x0 motor.o
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_exit.o)
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr51\libgcc.a(_copy_data.o)
@@ -438,7 +449,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
                                  0x30 (size before relaxing)
  .comment       0x00000000       0x30 lcd.o
  .comment       0x00000000       0x30 main.o
- .comment       0x00000000       0x30 Memory.o
+ .comment       0x00000000       0x30 memory.o
  .comment       0x00000000       0x30 motor.o
 
 .debug
@@ -453,7 +464,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0xd8
+.debug_aranges  0x00000000      0x120
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x30 adc.o
@@ -462,58 +473,66 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  .debug_aranges
                 0x00000080       0x20 main.o
  .debug_aranges
-                0x000000a0       0x38 motor.o
+                0x000000a0       0x48 memory.o
+ .debug_aranges
+                0x000000e8       0x38 motor.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xf14
+.debug_info     0x00000000     0x1124
  *(.debug_info)
  .debug_info    0x00000000       0xaf adc.o
  .debug_info    0x000000af      0x4e5 lcd.o
- .debug_info    0x00000594      0x515 main.o
- .debug_info    0x00000aa9      0x46b motor.o
+ .debug_info    0x00000594      0x4ac main.o
+ .debug_info    0x00000a40      0x279 memory.o
+ .debug_info    0x00000cb9      0x46b motor.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x5d9
+.debug_abbrev   0x00000000      0x6d9
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0x69 adc.o
  .debug_abbrev  0x00000069      0x1c6 lcd.o
- .debug_abbrev  0x0000022f      0x224 main.o
- .debug_abbrev  0x00000453      0x186 motor.o
+ .debug_abbrev  0x0000022f      0x1d2 main.o
+ .debug_abbrev  0x00000401      0x152 memory.o
+ .debug_abbrev  0x00000553      0x186 motor.o
 
-.debug_line     0x00000000      0x97b
+.debug_line     0x00000000      0xba8
  *(.debug_line)
  .debug_line    0x00000000      0x118 adc.o
- .debug_line    0x00000118      0x2da lcd.o
- .debug_line    0x000003f2      0x2a0 main.o
- .debug_line    0x00000692        0x0 Memory.o
- .debug_line    0x00000692      0x2e9 motor.o
+ .debug_line    0x00000118      0x2d7 lcd.o
+ .debug_line    0x000003ef      0x29b main.o
+ .debug_line    0x0000068a      0x235 memory.o
+ .debug_line    0x000008bf      0x2e9 motor.o
 
-.debug_frame    0x00000000      0x1b8
+.debug_frame    0x00000000      0x25c
  *(.debug_frame)
  .debug_frame   0x00000000       0x50 adc.o
  .debug_frame   0x00000050       0x98 lcd.o
  .debug_frame   0x000000e8       0x34 main.o
- .debug_frame   0x0000011c       0x9c motor.o
+ .debug_frame   0x0000011c       0xa4 memory.o
+ .debug_frame   0x000001c0       0x9c motor.o
 
-.debug_str      0x00000000      0x27f
+.debug_str      0x00000000      0x325
  *(.debug_str)
  .debug_str     0x00000000       0xb7 adc.o
                                  0xeb (size before relaxing)
- .debug_str     0x000000b7       0xcf lcd.o
+ .debug_str     0x000000b7       0xca lcd.o
                                 0x198 (size before relaxing)
- .debug_str     0x00000186       0x5b main.o
-                                0x1cf (size before relaxing)
- .debug_str     0x000001e1       0x9e motor.o
+ .debug_str     0x00000181       0x54 main.o
+                                0x1c8 (size before relaxing)
+ .debug_str     0x000001d5       0xb2 memory.o
+                                0x1ad (size before relaxing)
+ .debug_str     0x00000287       0x9e motor.o
                                 0x1d1 (size before relaxing)
 
-.debug_loc      0x00000000      0x4ca
+.debug_loc      0x00000000      0x6e8
  *(.debug_loc)
  .debug_loc     0x00000000       0x2f adc.o
  .debug_loc     0x0000002f       0xcf lcd.o
  .debug_loc     0x000000fe       0xb3 main.o
- .debug_loc     0x000001b1      0x319 motor.o
+ .debug_loc     0x000001b1      0x21e memory.o
+ .debug_loc     0x000003cf      0x319 motor.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -521,12 +540,13 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x98
+.debug_ranges   0x00000000       0xd0
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x20 adc.o
  .debug_ranges  0x00000020       0x40 lcd.o
  .debug_ranges  0x00000060       0x10 main.o
- .debug_ranges  0x00000070       0x28 motor.o
+ .debug_ranges  0x00000070       0x38 memory.o
+ .debug_ranges  0x000000a8       0x28 motor.o
 
 .debug_macro
  *(.debug_macro)
