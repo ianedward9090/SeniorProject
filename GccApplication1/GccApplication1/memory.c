@@ -80,4 +80,32 @@ unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress
 	return 0;
 }
 
+
+unsigned char EEPROM_read(unsigned char highAddress, unsigned char lowAddress, unsigned char totalChar){
+	unsigned char error, i, data;
+	i2c_start_proticol;
+	i2c_send_address(EEPROM_W);
+	i2c_send_data(highAddress);
+	i2c_send_data(lowAddress);
+	i2c_send_address(EEPROM_R);
+	
+	for(i = 0; i<totalChar;i++){
+		if(i == (totalChar-1))
+			data = i2c_receivedata_a();
+		}
+	stopi2c();
+	return 0;
+}
+
+
+unsigned char i2c_receivedata_a(void){
+
+	unsigned char data;
+	TWCR = (1<<TWEA) | (1<<TWINT) | (1<<TWEN);
+	
+	while (!(TWCR & (1<<TWINT)));
+	
+	data = TWDR;
+	return(data);
+}
 //Here is where memory Lives. OK
