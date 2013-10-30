@@ -40,17 +40,19 @@ int main(void)
 	USART_Init (baud);
 	//ADC_Init();
 	LCD_Init();
+	TWI_init();
 	_delay_ms(100);
 	
 	transmitstring("Data Points:",12);
 	nextline();
+	//i2c_start_proticol();
+	EEPROM_erase();
+	//EEPROM_address(0,address);
+	//EEPROM_write_datapoint(watts,elevation,azimuth);
 	
-	EEPROM_address(0,address);
-	EEPROM_write_datapoint(watts,elevation,azimuth);
+	transmitstring("Complete!",9);
 	
-	transmitstring("complete!",9);
-	
-	
+	stopi2c();
 	
 	
 	//while(1){

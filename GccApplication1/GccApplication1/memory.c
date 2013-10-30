@@ -8,13 +8,17 @@ typedef union{
 
 unsigned int i2c_start_proticol(void){
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
-	
+	transmitstring("start",5);
 	while(!(TWCR & (1<<TWINT)));
-	if ((TWSR & 0xF8) == START)			//Check value of TWI Status Register
+	if ((TWSR & 0xF8) == START)	{		//Check value of TWI Status Register
+		transmitstring("end",3);
 		return 0;
-	else
+		}
+		
+	else{
+	transmitstring("end",3);
 		return 1;
-	
+	}
 }
 
 void stopi2c(void){
@@ -107,5 +111,29 @@ unsigned char i2c_receivedata_a(void){
 	
 	data = TWDR;
 	return(data);
+}
+
+
+
+unsigned char EEPROM_erase(void){
+	unsigned int i;
+	
+	i2c_start_proticol();
+	i2c_send_address(EEPROM_W);
+	i2c_send_data(0x00);
+	i2c_send_data(0x00);
+	
+	for(i = 0; i< 0x8000; i++){
+		i2c_send_data(0xaa);
+	}
+	stopi2c();
+	return 0;
+}
+
+void TWI_init(void){
+	TWCR = 0x00;
+	TWBR = 0x02;
+	TWSR = 0x00;
+	TWCR = 0x44; //01000100
 }
 //Here is where memory Lives. OK
