@@ -15,7 +15,7 @@
 
 
 void USART_Init (unsigned int ubrr);
-void transmitchar(unsigned char data);
+void transmitchar(char data);
 void transmitstring(char text[], int a);
 void nextline(void);
 void clearlcd(void);

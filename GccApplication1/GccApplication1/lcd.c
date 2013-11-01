@@ -15,7 +15,7 @@ void USART_Init (unsigned int baud){
 	
 }
 
-void transmitchar(unsigned char data){
+void transmitchar(char data){
 	
 	while(!(UCSR0A & (1 << UDRE0))){
 		
