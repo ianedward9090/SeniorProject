@@ -14,4 +14,5 @@ unsigned char EEPROM_erase(void);
 void TWI_init(void);
 unsigned int i2c_start_protocolrepeat(void);
 unsigned char i2c_receiveData_NACK(void);
+void EEPROM_display(unsigned char * buffer);
 #endif

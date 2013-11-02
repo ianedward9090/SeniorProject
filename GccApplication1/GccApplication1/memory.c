@@ -117,7 +117,6 @@ unsigned char* EEPROM_read(unsigned char highAddress, unsigned char lowAddress, 
 	i2c_send_address(EEPROM_W);
 	i2c_send_data(highAddress);
 	i2c_send_data(lowAddress);
-	//EEPROM_address(0x00,0x00);
 	i2c_start_protocolrepeat();
 	i2c_send_address(EEPROM_R);
 for(i=0;i<totalChar;i++)
@@ -193,7 +192,7 @@ unsigned char EEPROM_erase(void){
 		}
 	
 	for(i = 0; i< 0x8000; i++){
-		error = i2c_send_data(0x48);
+		error = i2c_send_data(0x30);
 			if(error == 1)
 			{
 				transmitstring("errorsend",9);
@@ -212,5 +211,31 @@ void TWI_init(void){
 	TWBR = 0x08;
 	TWSR = (0<<TWPS0)|(0<<TWPS1);
 	TWCR = 0x44; //01000100
+}
+
+void EEPROM_display(unsigned char * buffer){
+	datapoint DP;
+	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	
+	DP.s[0] = buffer[0];
+	DP.s[1] = buffer[1];
+	DP.s[2] = buffer[2];
+	DP.s[3] = buffer[3];
+	
+	int l = sprintf(buffer2,"%.2f, ",DP.f);
+	
+	transmitstring(buffer2,l);
+	DP.s[0] = buffer[4];
+	DP.s[1] = buffer[5];
+	DP.s[2] = buffer[6];
+	DP.s[3] = buffer[7];
+	l = sprintf(buffer2,"%.0f, ",DP.f);
+	transmitstring(buffer2,l);
+	DP.s[0] = buffer[8];
+	DP.s[1] = buffer[9];
+	DP.s[2] = buffer[10];
+	DP.s[3] = buffer[11];
+	l = sprintf(buffer2,"%.0f",DP.f);
+	transmitstring(buffer2,l);
 }
 //Here is where memory Lives. OK

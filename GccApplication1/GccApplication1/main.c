@@ -4,7 +4,6 @@ typedef union{
 } datapoint;
 
 #define F_CPU 8000000UL 
-#define EEPRO 0xA0
 
 #include "motor.h"
 #include "lcd.h"
@@ -20,10 +19,14 @@ typedef union{
 
 int main(void)
 {
-	int i=0;
-	int j = 0;
+	int i,j;
 	int points = 0;
+	int program = 0;
 	char *a[4];
+	const char *programs[3];
+	programs[0] = "MemoryClear/Dump";
+	programs[1] = "Fill 900";
+	programs[2] = "Run SolarTracker";
 	//char buffer[20];
 	a[0] = "100";
 	a[1] = "200";
@@ -33,29 +36,28 @@ int main(void)
 	DDRC = 0xff;
 	DDRE = 0x00;
 	PORTE = (1<<PE6) | (1<<PE7);
+	
 	unsigned int currentazimuth = 0; //keeping track of azimuth
 	unsigned int currentelevation = 0;//keeping track of elevation
 	unsigned int baud = 9600;
+	
 	int wise = 2; //how many steps to take
 	int adcval;
 	unsigned char address = 0;
-	unsigned int bobby = 10;
-	char aaaa = 'a';
-	float watts = 9000;
-	float azimuth = 45;
-	float elevation = 90;
+	float watts, azimuth, elevation;
+
 	unsigned char ret;
 	char* buffer;
-	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	datapoint DP;
 	_delay_ms(500);
+	
 	USART_Init (baud);
 	//ADC_Init();
 	LCD_Init();
 	TWI_init();
 	_delay_ms(100);
-	transmitstring("Data Points:",12);
-	nextline();
+	
+	//transmitstring("Data Points:",12);
+	//nextline();
 	
 
 	//EEPROM_erase();
@@ -63,32 +65,63 @@ int main(void)
 	EEPROM_write_datapoint(1,1,1);
 	_delay_ms(50);
 	buffer = EEPROM_read(45,0,12);
-	DP.s[0] = buffer[0];
-	DP.s[1] = buffer[1];
-	DP.s[2] = buffer[2];
-	DP.s[3] = buffer[3];
 	
-	int l = sprintf(buffer2,"%.2f, ",DP.f);
-	
-	transmitstring(buffer2,l);
-	DP.s[0] = buffer[4];
-	DP.s[1] = buffer[5];
-	DP.s[2] = buffer[6];
-	DP.s[3] = buffer[7];
-	l = sprintf(buffer2,"%.0f, ",DP.f);
-	transmitstring(buffer2,l);
-	DP.s[0] = buffer[8];
-	DP.s[1] = buffer[9];
-	DP.s[2] = buffer[10];
-	DP.s[3] = buffer[11];
-	l = sprintf(buffer2,"%.0f",DP.f);
-	transmitstring(buffer2,l);	
 
 	
 	
 	stopi2c();
 	
+	/*********MAIN CODE WILL START HERE***********/
 	
+	transmitstring("Program?",8);
+	nextline();
+	
+	while(1){
+		begin:
+		if(RED_BUTTON){
+			transmitstring(programs[program],sizeof(programs[program]));
+			program++;
+			nextline();
+			if(program>2){
+				program = 0;
+			}
+			_delay_ms(1000);
+		}else {}
+		if(BLACK_BUTTON){
+			clearlcd();
+			_delay_ms(5);
+			
+			switch(program){
+				case 0:
+					transmitstring("Red: Erase!",11);
+					nextline();
+					transmitstring("Black: Dump!",12);
+					if(RED_BUTTON){
+						transmitstring("Erasing!",8);
+						_delay_ms(500);
+						EEPROM_erase();
+						clearlcd();
+						transmitstring("Erased!",7);
+						_delay_ms(2000);
+						goto begin;
+					}
+					if(BLACK_BUTTON){
+						//Dump Memory to PC here
+						goto begin;
+					}
+					break;
+				case 1:
+					transmitstring("Filling EEPROM",14);
+					//rest of EEPROM code
+					goto begin;
+					break;
+				case 2:
+					transmitstring("ENGAGE!",7);
+					break;
+			}
+			}	
+			break;
+	}
 	//while(1){
 		//if (RED_BUTTON){
 			//transmitstring(a[points],3);
