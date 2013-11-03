@@ -19,7 +19,7 @@ typedef union{
 
 int main(void)
 {
-	int i,j;
+	unsigned int i,j;
 	int points = 0;
 	int program = 0;
 	char *a[4];
@@ -51,77 +51,93 @@ int main(void)
 	_delay_ms(500);
 	
 	USART_Init (baud);
+	USARTPC_Init();
 	//ADC_Init();
 	LCD_Init();
 	TWI_init();
 	_delay_ms(100);
 	
-	//transmitstring("Data Points:",12);
-	//nextline();
+	transmitstring("Data Points:",12);
+	nextline();
 	
-
+	char buffer2[] ={7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
 	//EEPROM_erase();
-	EEPROM_address(45,0);
-	EEPROM_write_datapoint(1,1,1);
+	//EEPROM_address(50,0);
+	//EEPROM_write_datapoint(66357,55,57);
 	_delay_ms(50);
-	buffer = EEPROM_read(45,0,12);
-	
 
+	buffer = EEPROM_read(50,0,12);
+	EEPROM_display(buffer);
+	for(i = 0; i<2700; i++){
+		free(buffer);
+		//EEPROM_address(((i*12)&0xff00)>>8,(i*12)&0xf7);
+		int l = sprintf(buffer2,"%u, ",((i*12)&0xff00)>>8);
+		USART_putstring(buffer2,l);
+		l = sprintf(buffer2,"%u, ",(i*12)&0xf7);
+		USART_putstring(buffer2,l);
+		//EEPROM_write_datapoint(i,i+2.0,i+4.0);
+		//_delay_ms(50);
+		buffer = EEPROM_read(((i*12)&0xff00)>>8,(i*12)&0xf7,12);
+		EEPROM_DUMP_POINT(buffer);
+		USART_putchar('\n');
+		USART_putchar('\r');
+	}
+	
 	
 	
 	stopi2c();
 	
 	/*********MAIN CODE WILL START HERE***********/
 	
-	transmitstring("Program?",8);
-	nextline();
-	
-	while(1){
-		begin:
-		if(RED_BUTTON){
-			transmitstring(programs[program],sizeof(programs[program]));
-			program++;
-			nextline();
-			if(program>2){
-				program = 0;
-			}
-			_delay_ms(1000);
-		}else {}
-		if(BLACK_BUTTON){
-			clearlcd();
-			_delay_ms(5);
-			
-			switch(program){
-				case 0:
-					transmitstring("Red: Erase!",11);
-					nextline();
-					transmitstring("Black: Dump!",12);
-					if(RED_BUTTON){
-						transmitstring("Erasing!",8);
-						_delay_ms(500);
-						EEPROM_erase();
-						clearlcd();
-						transmitstring("Erased!",7);
-						_delay_ms(2000);
-						goto begin;
-					}
-					if(BLACK_BUTTON){
-						//Dump Memory to PC here
-						goto begin;
-					}
-					break;
-				case 1:
-					transmitstring("Filling EEPROM",14);
-					//rest of EEPROM code
-					goto begin;
-					break;
-				case 2:
-					transmitstring("ENGAGE!",7);
-					break;
-			}
-			}	
-			break;
-	}
+	//transmitstring("Program?",8);
+	//nextline();
+	//
+	//while(1){
+		//begin:
+		//if(RED_BUTTON){
+			//transmitstring(programs[program],sizeof(programs[program]));
+			//program++;
+			//nextline();
+			//if(program>2){
+				//program = 0;
+			//}
+			//_delay_ms(1000);
+		//}else {}
+		//if(BLACK_BUTTON){
+			//clearlcd();
+			//_delay_ms(5);
+			//
+			//switch(program){
+				//case 0:
+					//transmitstring("Red: Erase!",11);
+					//nextline();
+					//transmitstring("Black: Dump!",12);
+					//if(RED_BUTTON){
+						//transmitstring("Erasing!",8);
+						//_delay_ms(500);
+						//EEPROM_erase();
+						//clearlcd();
+						//transmitstring("Erased!",7);
+						//_delay_ms(2000);
+						//goto begin;
+					//}
+					//if(BLACK_BUTTON){
+						////Dump Memory to PC here
+						//goto begin;
+					//}
+					//break;
+				//case 1:
+					//transmitstring("Filling EEPROM",14);
+					////rest of EEPROM code
+					//goto begin;
+					//break;
+				//case 2:
+					//transmitstring("ENGAGE!",7);
+					//break;
+			//}
+			//}	
+			//break;
+	//}
 	//while(1){
 		//if (RED_BUTTON){
 			//transmitstring(a[points],3);

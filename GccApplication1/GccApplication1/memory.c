@@ -7,7 +7,7 @@ typedef union{
 #include <stdio.h>
 #include <stdlib.h>
 #include "memory.h"
-
+#include <util/delay.h>
 
 unsigned int i2c_start_protocol(void){
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
@@ -74,18 +74,23 @@ void EEPROM_write_datapoint(float watts, float elevation, float azimuth){
 	elevation1.f = elevation;
 	azimuth1.f = azimuth;
 	
+	
 	for(i = 0; i < 4; i++){
 		i2c_send_data(watts1.s[i]);
 	}
+	
 	for(i = 0; i < 4; i++){
 		i2c_send_data(elevation1.s[i]);
 	}
+	
 	for(i = 0; i < 4; i++){
 		i2c_send_data(azimuth1.s[i]);
 	}
+	
+	
 	//_delay_ms(50);
 	stopi2c();
-	//_delay_ms(50);
+	_delay_ms(50);
 }
 unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress){
 	int error = 0;
@@ -104,19 +109,19 @@ unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress
 	error = i2c_send_address(lowAddress);
 	
 	
-	
 	return 0;
 }
 
 
-unsigned char* EEPROM_read(unsigned char highAddress, unsigned char lowAddress, unsigned int totalChar){
+char* EEPROM_read(unsigned char highAddress, unsigned char lowAddress, unsigned int totalChar){
 	unsigned char error, i;
-	unsigned char* data= calloc(totalChar + 1, sizeof(unsigned char));
+	char* data = calloc(totalChar + 1, sizeof(char));
 	//data[totalChar]='/0';
-	i2c_start_protocol();
-	i2c_send_address(EEPROM_W);
-	i2c_send_data(highAddress);
-	i2c_send_data(lowAddress);
+	EEPROM_address(highAddress,lowAddress);
+	//i2c_start_protocol();
+	//i2c_send_address(EEPROM_W);
+	//i2c_send_data(highAddress);
+	//i2c_send_data(lowAddress);
 	i2c_start_protocolrepeat();
 	i2c_send_address(EEPROM_R);
 for(i=0;i<totalChar;i++)
@@ -192,7 +197,7 @@ unsigned char EEPROM_erase(void){
 		}
 	
 	for(i = 0; i< 0x8000; i++){
-		error = i2c_send_data(0x30);
+		error = i2c_send_data(0x39);
 			if(error == 1)
 			{
 				transmitstring("errorsend",9);
@@ -212,8 +217,7 @@ void TWI_init(void){
 	TWSR = (0<<TWPS0)|(0<<TWPS1);
 	TWCR = 0x44; //01000100
 }
-
-void EEPROM_display(unsigned char * buffer){
+void EEPROM_DUMP_POINT(char * buffer){
 	datapoint DP;
 	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	
@@ -221,21 +225,78 @@ void EEPROM_display(unsigned char * buffer){
 	DP.s[1] = buffer[1];
 	DP.s[2] = buffer[2];
 	DP.s[3] = buffer[3];
-	
 	int l = sprintf(buffer2,"%.2f, ",DP.f);
+	USART_putstring(buffer2,l);
 	
+	DP.s[0] = buffer[4];
+	DP.s[1] = buffer[5];
+	DP.s[2] = buffer[6];
+	DP.s[3] = buffer[7];
+	l = sprintf(buffer2,"%.0f, ",DP.f);
+	USART_putstring(buffer2,l);
+	
+	DP.s[0] = buffer[8];
+	DP.s[1] = buffer[9];
+	DP.s[2] = buffer[10];
+	DP.s[3] = buffer[11];
+	l = sprintf(buffer2,"%.0f",DP.f);
+	USART_putstring(buffer2,l);
+}
+void EEPROM_display(char * buffer){
+	datapoint DP;
+	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	
+	DP.s[0] = buffer[0];
+	DP.s[1] = buffer[1];
+	DP.s[2] = buffer[2];
+	DP.s[3] = buffer[3];
+	int l = sprintf(buffer2,"%.2f, ",DP.f);
 	transmitstring(buffer2,l);
+	
 	DP.s[0] = buffer[4];
 	DP.s[1] = buffer[5];
 	DP.s[2] = buffer[6];
 	DP.s[3] = buffer[7];
 	l = sprintf(buffer2,"%.0f, ",DP.f);
 	transmitstring(buffer2,l);
+	
 	DP.s[0] = buffer[8];
 	DP.s[1] = buffer[9];
 	DP.s[2] = buffer[10];
 	DP.s[3] = buffer[11];
 	l = sprintf(buffer2,"%.0f",DP.f);
 	transmitstring(buffer2,l);
+}
+
+void USARTPC_Init(void){
+		unsigned int baudrate;
+		baudrate = 51;
+		UBRR1H = (unsigned char) (baudrate >> 8);
+		UBRR1L = (unsigned char) baudrate;
+		UCSR1B = (1 << RXEN1) | (1 << TXEN1);//|(1<<RXCIE0);
+		UCSR1C = (1 << UCSZ11) | (1 << UCSZ10);
+	
+}
+
+char USART_putchar(char tx){
+	char good = 0;
+	while (!(UCSR1A & (1<<UDRE1)));
+	
+	UDR1 = tx;
+	
+	good = 1;
+	
+	return good;
+}
+
+char USART_putstring(char* tx, unsigned int totalChar){
+	char good = 0;
+	int i = 0;
+	
+	for(i=0;i<totalChar;i++){
+		USART_putchar(tx[i]);
+	}
+	good = 1;
+	return good;
 }
 //Here is where memory Lives. OK
