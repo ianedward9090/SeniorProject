@@ -65,7 +65,7 @@ unsigned char i2c_send_data(unsigned char data){
 	   return 0;
 
 }
-void EEPROM_write_datapoint(float watts, float elevation, float azimuth){
+unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,unsigned int address){
 	int i = 0;
 	datapoint watts1;
 	datapoint elevation1; 
@@ -73,24 +73,72 @@ void EEPROM_write_datapoint(float watts, float elevation, float azimuth){
 	watts1.f = watts;
 	elevation1.f = elevation;
 	azimuth1.f = azimuth;
+	char lowaddress = 0;
+	char highaddress = 0;
+	
+	lowaddress = address & 0xff;
+	highaddress = (address &0xff00)>>8;
+	
+	EEPROM_address(highaddress,lowaddress);
 	
 	
+
 	for(i = 0; i < 4; i++){
+		
 		i2c_send_data(watts1.s[i]);
+		stopi2c();
+		_delay_ms(30);
+		address++;
+		lowaddress = address & 0xff;
+		highaddress = (address &0xff00)>>8;
+		EEPROM_address(highaddress,lowaddress);
 	}
+	
+//if((((lowAddress&0b00111111)+4)>63)){
+		//stopi2c();
+		//address = lowAddress|(highAddress<<8);
+		//address += 4;
+		//highAddress = (address &0xff00)>>8;
+		//lowAddress = address & 0xff;
+		//EEPROM_address(highAddress,lowAddress);
+		//
+	//}
 	
 	for(i = 0; i < 4; i++){
 		i2c_send_data(elevation1.s[i]);
+		stopi2c();
+		_delay_ms(30);
+		address++;
+		lowaddress = address & 0xff;
+		highaddress = (address &0xff00)>>8;
+		EEPROM_address(highaddress,lowaddress);
 	}
 	
+		//if((((lowAddress&0b00111111)+4)>63)){
+			//stopi2c();
+			//address = lowAddress|(highAddress<<8);
+			//address += 4;
+			//highAddress = (address &0xff00)>>8;
+			//lowAddress = address & 0xff;
+			//EEPROM_address(highAddress,lowAddress);
+			//
+		//}
+	//
 	for(i = 0; i < 4; i++){
 		i2c_send_data(azimuth1.s[i]);
+		stopi2c();
+		_delay_ms(30);
+		address++;
+		lowaddress = address & 0xff;
+		highaddress = (address &0xff00)>>8;
+		EEPROM_address(highaddress,lowaddress);
 	}
 	
 	
 	//_delay_ms(50);
 	stopi2c();
 	_delay_ms(50);
+	return address;
 }
 unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress){
 	int error = 0;

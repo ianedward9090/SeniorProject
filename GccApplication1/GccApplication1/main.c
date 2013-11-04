@@ -43,7 +43,7 @@ int main(void)
 	
 	int wise = 2; //how many steps to take
 	int adcval;
-	unsigned char address = 0;
+	//unsigned char address = 0;
 	float watts, azimuth, elevation;
 
 	unsigned char ret;
@@ -60,7 +60,7 @@ int main(void)
 	transmitstring("Data Points:",12);
 	nextline();
 	
-	char buffer2[] ={7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
+	char buffer2[] ={7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
 	//EEPROM_erase();
 	//EEPROM_address(50,0);
 	//EEPROM_write_datapoint(66357,55,57);
@@ -68,16 +68,16 @@ int main(void)
 
 	buffer = EEPROM_read(50,0,12);
 	EEPROM_display(buffer);
+	int address = 0;
 	for(i = 0; i<2700; i++){
 		free(buffer);
-		//EEPROM_address(((i*12)&0xff00)>>8,(i*12)&0xf7);
-		int l = sprintf(buffer2,"%u, ",((i*12)&0xff00)>>8);
-		USART_putstring(buffer2,l);
-		l = sprintf(buffer2,"%u, ",(i*12)&0xf7);
-		USART_putstring(buffer2,l);
-		//EEPROM_write_datapoint(i,i+2.0,i+4.0);
-		//_delay_ms(50);
-		buffer = EEPROM_read(((i*12)&0xff00)>>8,(i*12)&0xf7,12);
+		//int l = sprintf(buffer2,"%u, ",(address&0xff00)>>8);
+		//USART_putstring(buffer2,l);
+		//l = sprintf(buffer2,"%u, ",address&0xff);
+		//USART_putstring(buffer2,l);
+		//address = EEPROM_write_datapoint(i,i*2,i*4,address);
+		//_delay_ms(30);
+		buffer = EEPROM_read(((i*12)&0xff00)>>8,(i*12)&0xff,12);
 		EEPROM_DUMP_POINT(buffer);
 		USART_putchar('\n');
 		USART_putchar('\r');
