@@ -137,7 +137,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 	
 	//_delay_ms(50);
 	stopi2c();
-	_delay_ms(50);
+	_delay_ms(20);
 	return address;
 }
 unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress){
@@ -212,50 +212,16 @@ unsigned char i2c_receiveData_NACK(void)
 }
 
 unsigned char EEPROM_erase(void){
-	unsigned int i;
-	unsigned char error;
-	
-	error = i2c_start_protocol();
-	if(error == 1)
-	{
-		transmitstring("error",5);
-		stopi2c();
-		return(1);
+	_delay_ms(1000);
+	int i;
+	int address = 0;
+	for(i = 0; i<2700; i++){
+		address = EEPROM_write_datapoint(0,0,0,address);
+		_delay_ms(10);
 	}
-	error = i2c_send_address(EEPROM_W);
-		if(error == 1)
-		{
-			transmitstring("error1",6);
-			stopi2c();
-			return(1);
-		}
-	error = i2c_send_data(0x00);
-		if(error == 1)
-		{
-			transmitstring("error2",6);
-			stopi2c();
-			return(1);
-		}
-	error = i2c_send_data(0x00);
-		if(error == 1)
-		{
-			transmitstring("error3",6);
-			stopi2c();
-			return(1);
-		}
-	
-	for(i = 0; i< 0x8000; i++){
-		error = i2c_send_data(0x39);
-			if(error == 1)
-			{
-				transmitstring("errorsend",9);
-				stopi2c();
-				return(1);
-			}
-		
-		
-	}
+	transmitstring("Complete",8);
 	stopi2c();
+	_delay_ms(1000);
 	return 0;
 }
 
@@ -280,39 +246,40 @@ void EEPROM_DUMP_POINT(char * buffer){
 	DP.s[1] = buffer[5];
 	DP.s[2] = buffer[6];
 	DP.s[3] = buffer[7];
-	l = sprintf(buffer2,"%.0f, ",DP.f);
+	l = sprintf(buffer2,"%.1f, ",DP.f);
 	USART_putstring(buffer2,l);
 	
 	DP.s[0] = buffer[8];
 	DP.s[1] = buffer[9];
 	DP.s[2] = buffer[10];
 	DP.s[3] = buffer[11];
-	l = sprintf(buffer2,"%.0f",DP.f);
+	l = sprintf(buffer2,"%.1f",DP.f);
 	USART_putstring(buffer2,l);
 }
 void EEPROM_display(char * buffer){
 	datapoint DP;
+	
 	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	
 	DP.s[0] = buffer[0];
 	DP.s[1] = buffer[1];
 	DP.s[2] = buffer[2];
 	DP.s[3] = buffer[3];
-	int l = sprintf(buffer2,"%.2f, ",DP.f);
+	int l = sprintf(buffer2,"%.2f,",DP.f);
 	transmitstring(buffer2,l);
 	
 	DP.s[0] = buffer[4];
 	DP.s[1] = buffer[5];
 	DP.s[2] = buffer[6];
 	DP.s[3] = buffer[7];
-	l = sprintf(buffer2,"%.0f, ",DP.f);
+	l = sprintf(buffer2,"%.1f,",DP.f);
 	transmitstring(buffer2,l);
 	
 	DP.s[0] = buffer[8];
 	DP.s[1] = buffer[9];
 	DP.s[2] = buffer[10];
 	DP.s[3] = buffer[11];
-	l = sprintf(buffer2,"%.0f",DP.f);
+	l = sprintf(buffer2,"%.1f",DP.f);
 	transmitstring(buffer2,l);
 }
 
