@@ -10,6 +10,7 @@ typedef union{
 #include "memory.h"
 #include "adc.h"
 #include "helper.h"
+#include <stdio.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdlib.h>
@@ -66,7 +67,7 @@ int main(void)
 	_delay_ms(100);
 
 	
-	char buffer2[] ={7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
+	char buffer2[50];
 	//EEPROM_erase();
 	//EEPROM_address(50,0);
 	//EEPROM_write_datapoint(66357,55,57);
@@ -85,7 +86,7 @@ int main(void)
 	//stopi2c();
 	
 	/*********MAIN CODE WILL START HERE***********/
-	
+	//char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	transmitstring("Program?",8);
 	nextline();
 	while(1){
@@ -131,28 +132,20 @@ int main(void)
 						for(j=0;j<25;j++){
 							currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
 							if(elevation > 0 && elevation <1){
-								elevation == 0;
+								elevation = 0;
 							}
 							elevation += wiser;
 							adcval = ADC_READ();
-							_delay_ms(1000);
+							_delay_ms(500);
 							voltage = .019531 * adcval;
-							current = (voltage / 56)*1000;
+							current = (voltage / 56.0)*1000.0;
 							mw = (18.616 * current) + 15.672;
 							itoa(mw,bufferadc,10);
 							address = EEPROM_write_datapoint(mw,azimuth,elevation,address);
-							voltage = 0;
-							current = 0;
-							mw = 0;
-							_delay_ms(300);
-							lowaddress = address & 0xff;
-							highaddress = (address &0xff00)>>8;
-							buffer = EEPROM_read(highaddress,lowaddress,12);
-							_delay_ms(100);
+							int l = sprintf(buffer2,"%.2f,%.1f,%.1f",mw,azimuth,elevation);
 							clearlcd();
-							EEPROM_display(buffer);
-							_delay_ms(400);
-							free(buffer);
+							transmitstring(buffer2,l);
+							_delay_ms(1000);
 						}
 						
 						wise = -wise; //invert wise so motor doesnt go beyond limits
