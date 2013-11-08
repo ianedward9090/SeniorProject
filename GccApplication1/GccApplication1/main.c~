@@ -28,14 +28,15 @@ int main(void)
 	unsigned int i,j;
 	int points = 0;
 	int program = 0;
-	char *a[2];
-	a[0] = "650 ";
-	a[1] = "1275";
-	char *programs[3];
-	programs[0] = "MemoryClear     ";
-	programs[1] = "MemoryDump      ";
-	programs[2] = "Run SolarTracker";
+	char points_options[][] = {"625", "1275"};
+	//points_options[0] = "625 ";
+	//points_options[1] = "1275";
+	char programs[][] = {"MemoryClear", "MemoryDump", "Run SolarTracker"};
+	//programs[0] = "MemoryClear     ";
+	//programs[1] = "MemoryDump      ";
+	//programs[2] = "Run SolarTracker";
 	char bufferadc[20];
+
 	PORTC = 0; //for motor control
 	DDRC = 0xff;
 	DDRE = 0x00;
@@ -131,7 +132,7 @@ int main(void)
 								points = 0;
 							}
 							nextline();
-							transmitstring(a[points],strlen(a[points]));
+							transmitstring(points_options[points],strlen(points_options[points]));
 							// debouncing
 							_delay_ms(700);
 						}
@@ -139,7 +140,7 @@ int main(void)
 							switch(points){
 								case 0:
 									clearlcd();
-									azimuth_motor = 26;
+									azimuth_motor = 25;
 									elevation_motor = 25;
 									azimuthadd = 7.2;
 									wise = 2;
