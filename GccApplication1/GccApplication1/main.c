@@ -87,6 +87,7 @@ int main(void)
 	/*********MAIN CODE WILL START HERE***********/
 	//char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	int azimuthrotate = 0;
+	
 	transmitstring("Program?",8);
 	nextline();
 	while(1){
@@ -119,6 +120,8 @@ int main(void)
 					break;
 				case 2:{
 					// Record
+					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
+					currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);
 					clearlcd();
 					transmitstring("Points?",7);
@@ -171,21 +174,38 @@ int main(void)
 					
 					for(j = 0;j < elevation_motor; j++){
 						currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
+						
 						if(elevation > 0 && elevation <1){
 							elevation = 0;
 						}
 						elevation += wiser;
+						adcval = 0;
 						adcval = ADC_READ();
-						_delay_ms(150);
-						voltage = .004883 * adcval;
+						_delay_ms(250);
+						
+						voltage = .01921875 * adcval;
 						current = (voltage / 56.0)*1000.0;
-						mw = (18.616 * current) + 15.672;
-						itoa(mw,bufferadc,10);
+						if((adcval >= 58) && (adcval <= 117)){ //20-64 mA range
+							mw = (3.5585 * current) + 184.825;
+						}
+						else if ((adcval >= 118) && (adcval<=204)){
+							mw = (10.395 * current) - 115.259;
+						}
+						else if ((adcval >= 205) && (adcval<=233)){
+							mw = (30.8519 * current) - 1507.81;
+						}
+						else if(adcval>233){
+							mw = (26.0466 * current) - 1119.89;
+						}
+						else if(adcval<58){
+							mw = (12.0532 * current) + 33.4447;
+						}
+						//itoa(mw,bufferadc,10);
 						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);
 						int l = sprintf(buffer2,"%.2f,%.1f,%.1f",mw,azimuth,elevation);
 						clearlcd();
 						transmitstring(buffer2,l);
-						_delay_ms(100);
+						_delay_ms(5050);
 					}
 					
 					wise = -wise; //invert wise so motor doesnt go beyond limits
