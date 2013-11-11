@@ -202,10 +202,14 @@ int main(void)
 						}
 						//itoa(mw,bufferadc,10);
 						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);
-						int l = sprintf(buffer2,"%.2f,%.1f,%.1f",mw,azimuth,elevation);
+						int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);
 						clearlcd();
 						transmitstring(buffer2,l);
-						_delay_ms(5050);
+						_delay_ms(400);
+						if(BLACK_BUTTON){
+							_delay_ms(20000);
+							
+						}
 					}
 					
 					wise = -wise; //invert wise so motor doesnt go beyond limits
