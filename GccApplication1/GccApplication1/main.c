@@ -185,14 +185,21 @@ int main(void)
 						
 						voltage = .01921875 * adcval;
 						current = (voltage / 56.0)*1000.0;
-						if((adcval >= 58) && (adcval <= 117)){ //20-64 mA range
-							mw = (3.5585 * current) + 184.825;
+						if((adcval >= 58) && (adcval <= 117)){ //20-40 mA range
+							mw = (6.5585 * current) + 84.825;
 						}
-						else if ((adcval >= 118) && (adcval<=204)){
-							mw = (10.395 * current) - 115.259;
+						else if ((adcval >= 118) && (adcval<=173)){//40-60 mA range
+							mw = (10.395 * current) - 245.259;
 						}
-						else if ((adcval >= 205) && (adcval<=233)){
-							mw = (30.8519 * current) - 1507.81;
+						else if ((adcval >= 174) && (adcval<=203)){//60-70 mA range
+							mw = (10.395 * current) - 295.259;
+						}
+						
+						else if ((adcval >= 204) && (adcval<=219)){//70-75 mA range
+							mw = (30.8519 * current) - 1707.81;
+						}
+						else if ((adcval >= 220) && (adcval<=233)){//75-80 mA range
+							mw = (30.8519 * current) - 1607.81;
 						}
 						else if(adcval>233){
 							mw = (26.0466 * current) - 1119.89;
