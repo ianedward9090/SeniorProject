@@ -24,6 +24,6 @@ ISR(ADC_vect){
 int ADC_READ(void){
 	ADCSRA |= (1<<ADSC);
 	while (ADCSRA & (1<<ADSC));
-	return ADCH;
+	return ADC;
 	
 	}

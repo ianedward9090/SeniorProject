@@ -1,3 +1,5 @@
+//This really needs some sprucing up
+
 typedef union{
 	float f;
 	char  s[4];
@@ -120,8 +122,8 @@ int main(void)
 					break;
 				case 2:{
 					// Record
-					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-					currentelevation = rotate_relative_elevation(currentelevation, -1);
+					//currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
+					//currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);
 					clearlcd();
 					transmitstring("Points?",7);
@@ -168,44 +170,47 @@ int main(void)
 					for(i = 0; i < azimuth_motor; i++){
 						if(i != 0 ){
 							wiser = -wiser;
-							currentazimuth = rotate_relative_azimuth(currentazimuth, azimuthrotate); //rotate 180 degrees
+							//currentazimuth = rotate_relative_azimuth(currentazimuth, azimuthrotate); //rotate 180 degrees
 							azimuth = azimuth + azimuthadd;
 						}
 					
 					for(j = 0;j < elevation_motor; j++){
-						currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
+						//currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
 						
 						if(elevation > 0 && elevation <1){
 							elevation = 0;
 						}
 						elevation += wiser;
 						adcval = 0;
+						current = 0;
+						voltage = 0;
+						mw = 0;
 						adcval = ADC_READ();
-						_delay_ms(250);
+						_delay_ms(350);
 						
-						voltage = .01921875 * adcval;
-						current = (voltage / 56.0)*1000.0;
+						voltage = .019297 * adcval;
+						current = (voltage / 56.0) * 1000.0;
 						if((adcval >= 58) && (adcval <= 117)){ //20-40 mA range
-							mw = (6.5585 * current) + 84.825;
+							mw = (3.5585 * current) + 164.825;
 						}
 						else if ((adcval >= 118) && (adcval<=173)){//40-60 mA range
-							mw = (10.395 * current) - 245.259;
+							mw = (2.5585 * current) +204.825;
 						}
 						else if ((adcval >= 174) && (adcval<=203)){//60-70 mA range
-							mw = (10.395 * current) - 295.259;
+							mw = (9.395 * current) - 205.259;
 						}
 						
 						else if ((adcval >= 204) && (adcval<=219)){//70-75 mA range
 							mw = (30.8519 * current) - 1707.81;
 						}
 						else if ((adcval >= 220) && (adcval<=233)){//75-80 mA range
-							mw = (30.8519 * current) - 1607.81;
+							mw = (70.8519 * current) - 4707.81;
 						}
 						else if(adcval>233){
-							mw = (26.0466 * current) - 1119.89;
+							mw = (29.0466 * current) - 1359.89;
 						}
 						else if(adcval<58){
-							mw = (12.0532 * current) + 33.4447;
+							mw = (8.0532 * current) + 73.4447;
 						}
 						//itoa(mw,bufferadc,10);
 						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);

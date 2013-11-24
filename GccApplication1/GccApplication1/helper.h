@@ -1,3 +1,4 @@
+//Helper Functions if I ever need them
 #ifndef __HELPER_H
 #define __HELPER_H
 void clearmemory(void);
