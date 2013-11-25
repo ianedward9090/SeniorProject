@@ -28,7 +28,7 @@ void clockwise(void)
 	_delay_ms(5);
 }
 
-void counterclockwise(void)// Test functions not ever used anymore
+void counterclockwise(void)
 {
 	PORTC = 0b00000110;
 	_delay_ms(5);
@@ -62,7 +62,7 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps
-		_delay_ms(10);//Can go smaller if needed
+		_delay_ms(10);
 	}
 	//PORTD = 0;
 	return current_state;
