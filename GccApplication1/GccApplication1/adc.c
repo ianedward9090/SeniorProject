@@ -12,9 +12,8 @@ void ADC_Init(void){
 }
 
 void ADC_ON(void){
-	ADCSRA |= (1 << ADEN);
+	ADCSRA |= (1 << ADEN); 
 	ADCSRA |= (1 << ADSC); 
-	
 }
 
 ISR(ADC_vect){

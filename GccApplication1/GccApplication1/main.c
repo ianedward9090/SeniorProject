@@ -69,23 +69,6 @@ int main(void)
 
 	
 	char buffer2[50];
-	//EEPROM_erase();
-	//EEPROM_address(50,0);
-	//EEPROM_write_datapoint(66357,55,57);
-	//demo_memory();
-
-	//buffer = EEPROM_read(50,0,12);
-	//EEPROM_display(buffer);
-	int address = 0;
-
-		//address = EEPROM_write_datapoint(i,i*2,i*4,address);
-		//_delay_ms(10);
-
-	//demo_memory();
-	
-	
-	//stopi2c();
-	
 	/*********MAIN CODE WILL START HERE***********/
 	//char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	int azimuthrotate = 0;
@@ -122,8 +105,8 @@ int main(void)
 					break;
 				case 2:{
 					// Record
-					//currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-					//currentelevation = rotate_relative_elevation(currentelevation, -1);
+					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
+					currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);
 					clearlcd();
 					transmitstring("Points?",7);
@@ -166,16 +149,15 @@ int main(void)
 					azimuth = 0;
 					elevation = 0;
 					ADC_ON();
-			
 					for(i = 0; i < azimuth_motor; i++){
 						if(i != 0 ){
 							wiser = -wiser;
-							//currentazimuth = rotate_relative_azimuth(currentazimuth, azimuthrotate); //rotate 180 degrees
+							currentazimuth = rotate_relative_azimuth(currentazimuth, azimuthrotate); //rotate 180 degrees
 							azimuth = azimuth + azimuthadd;
 						}
 					
 					for(j = 0;j < elevation_motor; j++){
-						//currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
+						currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
 						
 						if(elevation > 0 && elevation <1){
 							elevation = 0;
@@ -206,25 +188,24 @@ int main(void)
 						else if ((adcval >= 220) && (adcval<=233)){//75-80 mA range
 							mw = (70.8519 * current) - 4707.81;
 						}
-						else if(adcval>233){
+						else if(adcval>233){//Above 80 mA range
 							mw = (29.0466 * current) - 1359.89;
 						}
-						else if(adcval<58){
+						else if(adcval<58){//Below 20 mA range
 							mw = (8.0532 * current) + 73.4447;
 						}
 						//itoa(mw,bufferadc,10);
-						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);
+						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);//write the datapoint
 						int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);
-						clearlcd();
+						clearlcd();//Refresh LCD
 						transmitstring(buffer2,l);
 						_delay_ms(400);
-						if(BLACK_BUTTON){
+						if(BLACK_BUTTON){//To show our spec
 							_delay_ms(20000);
 							
 						}
 					}
-					
-					wise = -wise; //invert wise so motor doesnt go beyond limits
+					wise = -wise; //invert wise so motor doesn't go beyond limits
 					}
 					break;
 				}

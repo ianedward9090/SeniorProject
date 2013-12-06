@@ -11,18 +11,12 @@ void USART_Init (unsigned int baud){
 	UBRR0L = (unsigned char) baudrate;
 	UCSR0B = (1 << RXEN0) | (1 << TXEN0);//|(1<<RXCIE0);
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
-	
-	
 }
 
 void transmitchar(char data){
-	
-	while(!(UCSR0A & (1 << UDRE0))){
-		
+	while(!(UCSR0A & (1 << UDRE0))){	
 	}
-	
 	UDR0 = data;
-	
 }
 
 void transmitstring(char text[], int a){
@@ -31,11 +25,9 @@ void transmitstring(char text[], int a){
 	for(i=0; i < a; i++){
 		transmitchar(text[i]);
 	}
-	
 }
 
-unsigned char USART_Receive( void )
-{
+unsigned char USART_Receive( void ){
 	/* Wait for data to be received */
 	while ( !(UCSR0A & (1<<RXC)) )
 	;
@@ -59,7 +51,6 @@ return 0;
 }
 
 void nextline(void){
-	
 	transmitchar(0x9F);
 	transmitchar(0xFF);
 	transmitchar(0x00);

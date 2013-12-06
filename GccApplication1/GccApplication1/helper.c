@@ -19,11 +19,6 @@ void demo_memory(void){
 			itoa (i,bufferchar,10);
 			USART_putstring(bufferchar,strlen(bufferchar));
 			USART_putstring(":   ",4);
-			
-			//USART_putstring(buffer2,l);
-			//l = sprintf(buffer2,"%u, ",(i*12)&0xff);
-			//USART_putstring(buffer2,l);
-			//_delay_ms(10);
 			buffer = EEPROM_read(((i*12)&0xff00)>>8,(i*12)&0xff,12);
 			EEPROM_DUMP_POINT(buffer);
 			USART_putchar('\n');

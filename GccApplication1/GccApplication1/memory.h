@@ -3,6 +3,7 @@
 #define	START 0x08
 #define EEPROM_W 0xa0
 #define EEPROM_R 0xa1
+
 void stopi2c(void);
 unsigned int i2c_start_protocol(void);
 unsigned int i2c_send_address(unsigned char address);

@@ -6,17 +6,7 @@
 
 #include "motor.h"
 
-//#define RED1   PORTB0
-//#define BLUE1  PORTB1
-//#define BLACK1 PORTB2
-//#define WHITE1 PORTB3
-
-//#define RED2   _BV(PB4)
-//#define BLUE2  _BV(PB5)
-//#define BLACK2 _BV(PB6)
-//#define WHITE2 _BV(PB7)
-
-void clockwise(void)
+void clockwise(void)//Test function not used anymore
 {
 	PORTC = 0b00001010;
 	_delay_ms(5);
@@ -46,7 +36,8 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 	unsigned int current_upper_PORTC = 0;
 	
 	int i;
-	for (i = 0; i < abs(steps); i++) {
+	/*Move A set amount of steps in a direction*/
+	for (i = 0; i < abs(steps); i++) { 
 		if (steps < 0) {
 			next_state = current_state - 1;
 		} else if (steps > 0) {

@@ -93,17 +93,6 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 		highaddress = (address &0xff00)>>8;
 		EEPROM_address(highaddress,lowaddress);
 	}
-	
-//if((((lowAddress&0b00111111)+4)>63)){
-		//stopi2c();
-		//address = lowAddress|(highAddress<<8);
-		//address += 4;
-		//highAddress = (address &0xff00)>>8;
-		//lowAddress = address & 0xff;
-		//EEPROM_address(highAddress,lowAddress);
-		//
-	//}
-	
 	for(i = 0; i < 4; i++){
 		i2c_send_data(elevation1.s[i]);
 		stopi2c();
@@ -113,17 +102,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 		highaddress = (address &0xff00)>>8;
 		EEPROM_address(highaddress,lowaddress);
 	}
-	
-		//if((((lowAddress&0b00111111)+4)>63)){
-			//stopi2c();
-			//address = lowAddress|(highAddress<<8);
-			//address += 4;
-			//highAddress = (address &0xff00)>>8;
-			//lowAddress = address & 0xff;
-			//EEPROM_address(highAddress,lowAddress);
-			//
-		//}
-	//
+
 	for(i = 0; i < 4; i++){
 		i2c_send_data(azimuth1.s[i]);
 		stopi2c();
@@ -166,10 +145,6 @@ char* EEPROM_read(unsigned char highAddress, unsigned char lowAddress, unsigned 
 	char* data = calloc(totalChar + 1, sizeof(char));
 	//data[totalChar]='/0';
 	EEPROM_address(highAddress,lowAddress);
-	//i2c_start_protocol();
-	//i2c_send_address(EEPROM_W);
-	//i2c_send_data(highAddress);
-	//i2c_send_data(lowAddress);
 	i2c_start_protocolrepeat();
 	i2c_send_address(EEPROM_R);
 for(i=0;i<totalChar;i++)
@@ -314,4 +289,3 @@ char USART_putstring(char* tx, unsigned int totalChar){
 	good = 1;
 	return good;
 }
-//Here is where memory Lives. OK
