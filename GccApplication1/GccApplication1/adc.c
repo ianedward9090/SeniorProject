@@ -16,13 +16,9 @@ void ADC_ON(void){
 	ADCSRA |= (1 << ADSC); 
 }
 
-ISR(ADC_vect){
-
-}
-
 int ADC_READ(void){
 	ADCSRA |= (1<<ADSC);
 	while (ADCSRA & (1<<ADSC));
 	return ADC;
 	
-	}
+}

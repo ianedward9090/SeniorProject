@@ -8,6 +8,8 @@ typedef union{
 #define F_CPU 8000000UL 
 #define RED_BUTTON !(PINE & (1 << PE7))
 #define BLACK_BUTTON !(PINE & (1 << PE6))
+#define LIMIT1 !(PINE & (1 << PE2))
+#define LIMIT2 !(PINE & (1 << PE3))
 
 #include "motor.h"
 #include "lcd.h"
@@ -53,7 +55,7 @@ int main(void)
 	float wiser = 3.6;
 	float azimuthadd = 0;
 	int adcval;
-	//unsigned char address = 0;
+	int address = 0;
 	float watts, azimuth, elevation;
 
 	unsigned char ret;
@@ -105,6 +107,10 @@ int main(void)
 					break;
 				case 2:{
 					// Record
+					clearlcd();
+					transmitstring("Homing",6);
+					//currentazimuth = Home_Azimuth();
+					//currentelevation = Home_Elevation();
 					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
 					currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);

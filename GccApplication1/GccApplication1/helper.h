@@ -4,4 +4,6 @@
 void clearmemory(void);
 void init_everything(void);
 void demo_memory(void);
+unsigned int Home_Azimuth(void);
+unsigned int Home_Elevation(void);
 #endif
