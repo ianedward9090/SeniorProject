@@ -3,11 +3,14 @@ typedef union{
 	char  s[4];
 } datapoint;
 
+#define F_CPU 8000000UL 
+
 #include <avr/io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "memory.h"
 #include <util/delay.h>
+#include "lcd.h"
 
 unsigned int i2c_start_protocol(void){
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);

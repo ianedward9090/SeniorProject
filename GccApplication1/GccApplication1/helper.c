@@ -53,3 +53,30 @@ unsigned int Home_Elevation(void){
 	}
 	return currentelevation;
 }
+
+float get_mw(int adcval, float current){
+	float mw;
+	if((adcval >= 58) && (adcval <= 117)){ //20-40 mA range
+		mw = (3.5585 * current) + 164.825;
+	}
+	else if ((adcval >= 118) && (adcval<=173)){//40-60 mA range
+		mw = (2.5585 * current) +204.825;
+	}
+	else if ((adcval >= 174) && (adcval<=203)){//60-70 mA range
+		mw = (9.395 * current) - 205.259;
+	}
+							
+	else if ((adcval >= 204) && (adcval<=219)){//70-75 mA range
+		mw = (30.8519 * current) - 1707.81;
+	}
+	else if ((adcval >= 220) && (adcval<=233)){//75-80 mA range
+		mw = (70.8519 * current) - 4707.81;
+	}
+	else if(adcval>233){//Above 80 mA range
+		mw = (29.0466 * current) - 1359.89;
+	}
+	else if(adcval<58){//Below 20 mA range
+		mw = (8.0532 * current) + 73.4447;
+	}
+	return mw;
+}
