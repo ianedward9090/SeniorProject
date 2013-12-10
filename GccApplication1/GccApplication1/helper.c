@@ -30,7 +30,7 @@ void demo_memory(void){
 void init_everything(void){
 	USART_Init (9600);
 	USARTPC_Init();
-	ADC_Init();
+	ADC_Init_C();
 	LCD_Init();
 	TWI_init();
 	

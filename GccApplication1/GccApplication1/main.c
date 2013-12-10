@@ -8,8 +8,8 @@ typedef union{
 #define F_CPU 8000000UL 
 #define RED_BUTTON !(PINE & (1 << PE7))
 #define BLACK_BUTTON !(PINE & (1 << PE6))
-#define LIMIT1 !(PINE & (1 << PE2))
-#define LIMIT2 !(PINE & (1 << PE3))
+#define LIMIT2 !(PINE & (1 << PE2))
+#define LIMIT3 !(PINE & (1 << PE3))
 
 #include "motor.h"
 #include "lcd.h"
@@ -46,7 +46,7 @@ int main(void)
 	PORTC = 0; //for motor control
 	DDRC = 0xff;
 	DDRE = 0x00;
-	PORTE = (1<<PE6) | (1<<PE7);
+	PORTE = (1<<PE2) | (1<<PE3) | (1<<PE6) | (1<<PE7);
 	
 	unsigned int currentazimuth = 0; //keeping track of azimuth
 	unsigned int currentelevation = 0;//keeping track of elevation
@@ -74,7 +74,16 @@ int main(void)
 	TWI_init();
 	_delay_ms(100);
 
-	
+	//while(1){
+		//_delay_ms(1000);
+		//if(LIMIT3){
+			//transmitstring("1",1);
+		//
+		//}
+		//else{
+			//transmitstring("0",1);
+		//}
+	//}
 	char buffer2[50];
 	/*********MAIN CODE WILL START HERE***********/
 	//char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -85,7 +94,7 @@ int main(void)
 	while(1){
 		if (RED_BUTTON){
 			program++;
-			if(program>2){
+			if(program>3){
 				program = 0;
 			}
 			nextline();
@@ -110,7 +119,7 @@ int main(void)
 					clearlcd();
 					transmitstring("DUMPED!",6);
 					break;
-				case 2:
+				case 2:{
 					clearlcd();
 					transmitstring("Finding Sun",11);
 					ADC_Init_B_Azimuth();
@@ -142,14 +151,15 @@ int main(void)
 					clearlcd();//Refresh LCD
 					transmitstring(buffer2,l);
 					break;
+				}
 				case 3:{
 					// Record
 					clearlcd();
 					transmitstring("Homing",6);
 					//currentazimuth = Home_Azimuth();
-					//currentelevation = Home_Elevation();
-					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-					currentelevation = rotate_relative_elevation(currentelevation, -1);
+					currentelevation = Home_Elevation();
+					//currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
+					//currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);
 					clearlcd();
 					transmitstring("Points?",7);
