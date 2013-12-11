@@ -157,7 +157,7 @@ int main(void)
 					clearlcd();
 					transmitstring("Homing",6);
 					//currentazimuth = Home_Azimuth();
-					currentelevation = Home_Elevation();
+					//currentelevation = Home_Elevation();
 					//currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
 					//currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);
@@ -205,12 +205,12 @@ int main(void)
 					for(i = 0; i < azimuth_motor; i++){
 						if(i != 0 ){
 							wiser = -wiser;
-							currentazimuth = rotate_relative_azimuth(currentazimuth, azimuthrotate); //rotate 180 degrees
+							//currentazimuth = rotate_relative_azimuth(currentazimuth, azimuthrotate); //rotate 180 degrees
 							azimuth = azimuth + azimuthadd;
 						}
 					
 					for(j = 0;j < elevation_motor; j++){
-						currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
+						//currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
 						
 						if(elevation > 0 && elevation <1){
 							elevation = 0;

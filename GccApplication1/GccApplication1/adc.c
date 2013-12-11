@@ -32,6 +32,6 @@ void ADC_ON(void){
 int ADC_READ(void){
 	ADCSRA |= (1<<ADSC);
 	while (ADCSRA & (1<<ADSC));
-	return ADC;
+	return ADCH;
 	
 }
