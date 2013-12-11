@@ -22,6 +22,7 @@ void ADC_Init_B_Elevation(void){
 	ADMUX |= (1 << REFS0); //Sets Reference to AVCC
 	ADMUX |= (1 << ADLAR); //Turns the ADC basically into a 8 bit ADC from 10 BIT !!!!READ ADCH!!!!
 	ADMUX |= (1 << MUX1);
+	ADMUX &= (~(1 <<MUX0));
 }
 
 void ADC_ON(void){
@@ -34,4 +35,8 @@ int ADC_READ(void){
 	while (ADCSRA & (1<<ADSC));
 	return ADCH;
 	
+}
+
+void ADC_OFF(void){
+	ADCSRA &= (~(1 <<ADEN));
 }

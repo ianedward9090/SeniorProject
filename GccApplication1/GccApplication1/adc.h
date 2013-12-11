@@ -5,4 +5,5 @@ void ADC_ON(void);
 int ADC_READ(void);
 void ADC_Init_B_Azimuth(void);
 void ADC_Init_B_Elevation(void);
+void ADC_OFF(void);
 #endif
