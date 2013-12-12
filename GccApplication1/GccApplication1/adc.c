@@ -8,6 +8,8 @@ void ADC_Init_C(void){
 	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); //Prescaler of 128   8M/128 = 62.5k
 	ADMUX |= (1 << REFS0); //Sets Reference to AVCC
 	ADMUX |= (1 << ADLAR); //Turns the ADC basically into a 8 bit ADC from 10 BIT !!!!READ ADCH!!!!
+	ADMUX &= (~(1 <<MUX0));
+	ADMUX &= (~(1 <<MUX1));
 	//ADCSRA |= (1 << ADFR); //free running mode 
 }
 
@@ -26,7 +28,7 @@ void ADC_Init_B_Elevation(void){
 }
 
 void ADC_ON(void){
-	ADCSRA |= (1 << ADEN); 
+	ADCSRA |= (1 << ADEN); //Enable
 	ADCSRA |= (1 << ADSC); 
 }
 
@@ -38,5 +40,5 @@ int ADC_READ(void){
 }
 
 void ADC_OFF(void){
-	ADCSRA &= (~(1 <<ADEN));
+	ADCSRA &= (~(1 <<ADEN)); //Disable
 }

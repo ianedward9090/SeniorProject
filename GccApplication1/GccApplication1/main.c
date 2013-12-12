@@ -25,15 +25,16 @@ typedef union{
 
 int main(void)
 {
-	//char lowaddress = 0;
-	//char highaddress = 0;
 	int azimuth_motor = 0;
 	int elevation_motor = 0;
 	int azimuthlimit = 0;
 	int elevationlimit = 0;
-	unsigned int i,j;
 	int points = 0;
 	int program = 0;
+	int adcval;
+	int address = 0;
+	int wise = 0; //how many steps to take
+
 	char *a[2];
 	a[0] = "650 ";
 	a[1] = "1275";
@@ -42,7 +43,7 @@ int main(void)
 	programs[1] = "MemoryDump      ";
 	programs[2] = "SunTracker      ";
 	programs[3] = "Run SolarTracker";
-	//char bufferadc[20];
+	
 	PORTC = 0; //for motor control
 	DDRC = 0xff;
 	DDRE = 0x00;
@@ -53,13 +54,11 @@ int main(void)
 	unsigned int baud = 9600;
 	unsigned int findazimuth = 0;
 	unsigned int findelevation = 0;
-	float voltage,current,mw;
+	unsigned int i,j;
 	
-	int wise = 0; //how many steps to take
+	float voltage,current,mw;
 	float wiser = 3.6;
 	float azimuthadd = 0;
-	int adcval;
-	int address = 0;
 	float azimuth = 0;
 	float elevation = 0;
 
@@ -69,7 +68,6 @@ int main(void)
 	
 	USART_Init (baud);
 	USARTPC_Init();
-	//ADC_Init_C();
 	LCD_Init();
 	TWI_init();
 	_delay_ms(100);
@@ -111,54 +109,84 @@ int main(void)
 					transmitstring("DUMPED!",6);
 					break;
 				case 2:{
-					clearlcd();
-					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-					currentelevation = rotate_relative_elevation(currentelevation, -1);
-					transmitstring("Finding Sun",11);
-					ADC_Init_B_Azimuth();
-					ADC_ON();
-					_delay_ms(100);
-					adcval = ADC_READ();
-					int sprint = sprintf(buffer2,"%i",adcval);
-					transmitstring(buffer2,sprint);
-					_delay_ms(200);
-					while((adcval < 125 || adcval > 131) && azimuthlimit <= 100){
+					int case2points = 1;
+					while(case2points){
+						if(RED_BUTTON){
+							points++;
+							if(points>1){
+								points = 0;
+							}
+							nextline();
+							transmitstring(a[points],strlen(a[points]));
+							// debouncing
+							_delay_ms(700);
+						}
+						if(BLACK_BUTTON){
+							case2points = 0;
+						}
+					}
+					int counter = a[points];
+					while(counter >0 ){
 						clearlcd();
-						findazimuth = rotate_relative_azimuth(findazimuth, 1);
-						azimuthlimit += 1;
+						currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
+						currentelevation = rotate_relative_elevation(currentelevation, -1);
+						transmitstring("Finding Sun",11);
+					
+						ADC_Init_B_Azimuth();
+						ADC_ON();
+						_delay_ms(100);
 						adcval = ADC_READ();
+					
 						int sprint = sprintf(buffer2,"%i",adcval);
 						transmitstring(buffer2,sprint);
-						azimuth = azimuth + 1.8;
-						_delay_ms(250);
-					}
-					_delay_ms(500);
-					ADC_OFF();
-					_delay_ms(100);
-					ADC_Init_B_Elevation();
-					ADC_ON();
-					_delay_ms(100);
-					adcval = ADC_READ();
-					while((adcval < 125 || adcval > 131) && elevationlimit <= 50){
-						clearlcd();
-						findelevation = rotate_relative_elevation(findelevation, -1);
-						elevationlimit += 1;
+						_delay_ms(200);
+						while((adcval < 125 || adcval > 131) && azimuthlimit <= 100){
+							clearlcd();
+							findazimuth = rotate_relative_azimuth(findazimuth, 1);
+							azimuthlimit += 1;
+							adcval = ADC_READ();
+							int sprint = sprintf(buffer2,"%i",adcval);
+							transmitstring(buffer2,sprint);
+							azimuth = azimuth + 1.8;
+							_delay_ms(250);
+						}
+					
+						_delay_ms(500);
+						ADC_OFF();
+						ADC_Init_B_Elevation();//Switch ADC
+						ADC_ON();
+						_delay_ms(100);
 						adcval = ADC_READ();
-						int sprint2 = sprintf(buffer2,"%i",adcval);
-						transmitstring(buffer2,sprint);
-						elevation = elevation + 1.8;
-						_delay_ms(250);
+					
+						while((adcval < 125 || adcval > 131) && elevationlimit <= 50){
+							clearlcd();
+							findelevation = rotate_relative_elevation(findelevation, -1);
+							elevationlimit += 1;
+							adcval = ADC_READ();
+							int sprint2 = sprintf(buffer2,"%i",adcval);
+							transmitstring(buffer2,sprint2);
+							elevation = elevation + 1.8;
+							_delay_ms(250);
+						}
+					
+						ADC_OFF();
+						ADC_Init_C(); //Switch ADC
+						ADC_ON();
+						_delay_ms(100);
+					
+						adcval = ADC_READ(); //Do the datapoint
+						voltage = .019297 * adcval;
+						current = (voltage / 56.0) * 1000.0;
+						mw = get_mw(adcval,current);
+						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);//write the datapoint
+						int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);
+						clearlcd();//Refresh LCD
+						transmitstring(buffer2,l); //Show the point
+					
+						rotate_relative_elevation(findelevation, elevationlimit); //Move back
+						rotate_relative_azimuth(findazimuth, -azimuthlimit); //Move back
 					}
-					//_delay_ms(500);
-					//ADC_Init_C();
-					//adcval = ADC_READ();
-					//voltage = .019297 * adcval;
-					//current = (voltage / 56.0) * 1000.0;
-					//mw = get_mw(adcval,current);
-					//address = EEPROM_write_datapoint(mw,azimuth,elevation,address);//write the datapoint
-					//int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);
-					//clearlcd();//Refresh LCD
-					//transmitstring(buffer2,l);
+					
 					break;
 				}
 				case 3:{
