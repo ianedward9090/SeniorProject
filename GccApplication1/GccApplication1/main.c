@@ -75,16 +75,6 @@ int main(void)
 	_delay_ms(100);
 	
 	char buffer2[50];
-	
-	//ADC_Init_B_Elevation();
-	//ADC_ON();
-//while(1){
-	//clearlcd();
-	//adcval = ADC_READ();
-	//int sprint = sprintf(buffer2,"%i",adcval);
-	//transmitstring(buffer2,sprint);
-	//_delay_ms(100);
-//}
 	////char buffer2[50];
 	/*********MAIN CODE WILL START HERE***********/
 	//char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -129,11 +119,16 @@ int main(void)
 					ADC_ON();
 					_delay_ms(100);
 					adcval = ADC_READ();
+					int sprint = sprintf(buffer2,"%i",adcval);
+					transmitstring(buffer2,sprint);
 					_delay_ms(200);
 					while((adcval < 125 || adcval > 131) && azimuthlimit <= 100){
+						clearlcd();
 						findazimuth = rotate_relative_azimuth(findazimuth, 1);
 						azimuthlimit += 1;
 						adcval = ADC_READ();
+						int sprint = sprintf(buffer2,"%i",adcval);
+						transmitstring(buffer2,sprint);
 						azimuth = azimuth + 1.8;
 						_delay_ms(250);
 					}
@@ -145,9 +140,12 @@ int main(void)
 					_delay_ms(100);
 					adcval = ADC_READ();
 					while((adcval < 125 || adcval > 131) && elevationlimit <= 50){
+						clearlcd();
 						findelevation = rotate_relative_elevation(findelevation, -1);
 						elevationlimit += 1;
 						adcval = ADC_READ();
+						int sprint2 = sprintf(buffer2,"%i",adcval);
+						transmitstring(buffer2,sprint);
 						elevation = elevation + 1.8;
 						_delay_ms(250);
 					}
@@ -165,12 +163,13 @@ int main(void)
 				}
 				case 3:{
 					// Record
+					ADC_Init_C();
 					clearlcd();
 					transmitstring("Homing",6);
 					//currentazimuth = Home_Azimuth();
 					//currentelevation = Home_Elevation();
-					currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-					currentelevation = rotate_relative_elevation(currentelevation, -1);
+					//currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
+					//currentelevation = rotate_relative_elevation(currentelevation, -1);
 					_delay_ms(700);
 					clearlcd();
 					transmitstring("Points?",7);
