@@ -3,19 +3,25 @@
 #define F_CPU 8000000UL 
 
 #include "helper.h"
+#include "memory.h"
+#include "adc.h"
+#include "lcd.h"
+#include "motor.h"
 #include <avr/interrupt.h> 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 void demo_memory(void){
 	char* buffer = malloc(sizeof(char) * 1024);
 	char bufferchar[20];
 	int i;
-	int u = 1;
 	char buffer2[] ={7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
 	for(i = 0; i<2700; i++){
 		free(buffer);
-		int l = sprintf(buffer2,"%u, ",((i*12)&0xff00)>>8);
+		sprintf(buffer2,"%u, ",((i*12)&0xff00)>>8);
 		USART_putstring("Point # ",8);
 		itoa (i,bufferchar,10);
 		USART_putstring(bufferchar,strlen(bufferchar));
@@ -55,7 +61,7 @@ unsigned int Home_Elevation(void){
 }
 
 float get_mw(int adcval, float current){
-	float mw;
+	float mw = 0;
 	if((adcval >= 58) && (adcval <= 117)){ //20-40 mA range
 		mw = (3.5585 * current) + 164.825;
 	}
