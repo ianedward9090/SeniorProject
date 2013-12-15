@@ -56,12 +56,12 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 		_delay_ms(10);//Can go smaller if needed
 	}
 	//PORTD = 0;
-	return current_state;
+	return current_state; //So the next call wont skip a step
 }
 
 
 unsigned int rotate_relative_elevation(int current_state, int steps) {
-	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000};
+	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000}; //See motor documentation
 	unsigned int next_state = current_state;
 	unsigned int current_lower_PORTC = 0;
 	
@@ -73,17 +73,17 @@ unsigned int rotate_relative_elevation(int current_state, int steps) {
 			next_state = current_state + 1;
 		};
 		
-		// Preserve the upper four bits
+		// Preserve the lower four bits
 		current_lower_PORTC = PORTC&0x0F;
 		
 		
-		// Set the lower four bits according to state
+		// Set the upper four bits according to state
 		PORTC = states[next_state%4] | current_lower_PORTC;
 		current_state = next_state%4;
 		
 		// Delay 10ms between steps
 		_delay_ms(10);
 	}
-	//PORTD = 0;
+	//PORTD = 0; Motor needs to be on to hold position
 	return current_state;
 }

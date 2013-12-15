@@ -14,11 +14,11 @@
 #define SLCD_CURSOR_ON 0x67
 
 
-void USART_Init (unsigned int ubrr);
-void transmitchar(char data);
-void transmitstring(char text[], int a);
-void nextline(void);
-void clearlcd(void);
-unsigned char USART_Receive();
-int LCD_Init (void);
+void USART_Init (unsigned int ubrr);//Initialize LCD USART
+void transmitchar(char data);//Transmit a char to the LCD
+void transmitstring(char text[], int length);//Transmit a string to LCD
+void nextline(void);//Move LCD pointer to next line
+void clearlcd(void);//Clear the LCD and reset
+
+int LCD_Init (void);//Initialize the LCD
 #endif

@@ -6,7 +6,7 @@
 
 void USART_Init (unsigned int baud){
 	unsigned int baudrate;
-	baudrate = 53;
+	baudrate = 53; //Baudrate for this particular LCD
 	UBRR0H = (unsigned char) (baudrate >> 8);
 	UBRR0L = (unsigned char) baudrate;
 	UCSR0B = (1 << RXEN0) | (1 << TXEN0);//|(1<<RXCIE0);
@@ -19,20 +19,12 @@ void transmitchar(char data){
 	UDR0 = data;
 }
 
-void transmitstring(char text[], int a){
+void transmitstring(char text[], int length){
 	
 	int i;
-	for(i=0; i < a; i++){
+	for(i=0; i < length; i++){
 		transmitchar(text[i]);
 	}
-}
-
-unsigned char USART_Receive( void ){
-	/* Wait for data to be received */
-	while ( !(UCSR0A & (1<<RXC)) )
-	;
-	/* Get and return received data from buffer */
-	return UDR0;
 }
 
 int LCD_Init (void){
@@ -43,14 +35,12 @@ int LCD_Init (void){
 	_delay_ms(5);
 	transmitchar(SLCD_INIT_ACK);
 	_delay_ms(10);
-	//transmitchar(SLCD_BACKLIGHT_ON);
-	_delay_ms(10);
 	transmitchar(SLCD_CHAR_HEADER);
 	_delay_ms(100);
 return 0;
 }
 
-void nextline(void){
+void nextline(void){ //Just a bunch of codes for a new line
 	transmitchar(0x9F);
 	transmitchar(0xFF);
 	transmitchar(0x00);
@@ -59,7 +49,7 @@ void nextline(void){
 }
 
 
-void clearlcd(void){
+void clearlcd(void){ //Clear out the LCD
 	transmitchar(0x9F);
 	_delay_ms(5);
 	transmitchar(0x65);

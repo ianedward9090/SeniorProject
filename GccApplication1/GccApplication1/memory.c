@@ -1,16 +1,19 @@
+//Code adapted from ATMEGA128 datasheet and EEPROM examples from Chennai Dharmani
+
 typedef union{
 	float f;
 	char  s[4];
 } datapoint;
+//Unions allow one potion of memory to be accesses as different data types.
 
 #define F_CPU 8000000UL 
 
 #include <avr/io.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "memory.h"
 #include <util/delay.h>
 #include "lcd.h"
+#include "memory.h"
 
 unsigned int i2c_start_protocol(void){
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
@@ -54,7 +57,6 @@ unsigned int i2c_send_address(unsigned char address){
 		return 0;
 	else
 		return 1;
-	 // Add some error checking here possible
 }
 
 
@@ -88,10 +90,10 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 
 	for(i = 0; i < 4; i++){
 		
-		i2c_send_data(watts1.s[i]);
+		i2c_send_data(watts1.s[i]);//Send one char at a time
 		stopi2c();
 		_delay_ms(30);
-		address++;
+		address++;//Next memory address
 		lowaddress = address & 0xff;
 		highaddress = (address &0xff00)>>8;
 		EEPROM_address(highaddress,lowaddress);
@@ -115,9 +117,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 		highaddress = (address &0xff00)>>8;
 		EEPROM_address(highaddress,lowaddress);
 	}
-	
-	
-	//_delay_ms(50);
+
 	stopi2c();
 	_delay_ms(20);
 	return address;
@@ -133,11 +133,25 @@ unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress
 	}
 	
 	error = i2c_send_address(EEPROM_W);
-	
+	if(error == 1){
+		transmitstring("error",5);
+		stopi2c();
+		return(1);
+	}
 	error = i2c_send_address(highAddress);
+	if(error == 1){
+		transmitstring("error",5);
+		stopi2c();
+		return(1);
+	}
 	
 	error = i2c_send_address(lowAddress);
 	
+	if(error == 1){
+		transmitstring("error",5);
+		stopi2c();
+		return(1);
+	}
 	
 	return 0;
 }
@@ -146,7 +160,6 @@ unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress
 char* EEPROM_read(unsigned char highAddress, unsigned char lowAddress, unsigned int totalChar){
 	unsigned char error, i;
 	char* data = calloc(totalChar + 1, sizeof(char));
-	//data[totalChar]='/0';
 	EEPROM_address(highAddress,lowAddress);
 	i2c_start_protocolrepeat();
 	i2c_send_address(EEPROM_R);
@@ -169,7 +182,7 @@ unsigned char i2c_receivedata_a(void){
 	
 	while (!(TWCR & (1<<TWINT)));
 	if((TWSR & 0xF8) != 0x50)
-		transmitstring("balls",5);
+		transmitstring("error",5);
 	data = TWDR;
 	return(data);
 }
@@ -183,7 +196,7 @@ unsigned char i2c_receiveData_NACK(void)
 	while (!(TWCR & (1<<TWINT)));	   	   //Wait for TWINT flag set. This indicates that the
 	//data has been received
 	if ((TWSR & 0xF8) != 0x58)    //Check value of TWI Status Register
-		transmitstring("balls2",6);
+		transmitstring("errors",6);
 	
 	data = TWDR;
 	return(data);
@@ -197,7 +210,7 @@ unsigned char EEPROM_erase(void){
 		address = EEPROM_write_datapoint(0,0,0,address);
 		_delay_ms(10);
 	}
-	transmitstring("Complete",8);
+	transmitstring("Complete",8);//Show complete on the LCD
 	stopi2c();
 	_delay_ms(1000);
 	return 0;
@@ -209,11 +222,12 @@ void TWI_init(void){
 	TWSR = (0<<TWPS0)|(0<<TWPS1);
 	TWCR = 0x44; //01000100
 }
+
 void EEPROM_DUMP_POINT(char * buffer){
-	datapoint DP;
+	datapoint DP; //This function puts the entire point out to serial
 	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	
-	DP.s[0] = buffer[0];
+	DP.s[0] = buffer[0];	
 	DP.s[1] = buffer[1];
 	DP.s[2] = buffer[2];
 	DP.s[3] = buffer[3];
@@ -234,32 +248,6 @@ void EEPROM_DUMP_POINT(char * buffer){
 	l = sprintf(buffer2,"%.1f",DP.f);
 	USART_putstring(buffer2,l);
 }
-void EEPROM_display(char * buffer){
-	datapoint DP;
-	
-	char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	
-	DP.s[0] = buffer[0];
-	DP.s[1] = buffer[1];
-	DP.s[2] = buffer[2];
-	DP.s[3] = buffer[3];
-	int l = sprintf(buffer2,"%.1f,",DP.f); //Display Light Intensity
-	transmitstring(buffer2,l);
-	
-	DP.s[0] = buffer[4];
-	DP.s[1] = buffer[5];
-	DP.s[2] = buffer[6];
-	DP.s[3] = buffer[7];
-	l = sprintf(buffer2,"%.1f,",DP.f);//Display azimuth
-	transmitstring(buffer2,l);
-	
-	DP.s[0] = buffer[8];
-	DP.s[1] = buffer[9];
-	DP.s[2] = buffer[10];
-	DP.s[3] = buffer[11];
-	l = sprintf(buffer2,"%.1f",DP.f);//Display Elevation
-	transmitstring(buffer2,l);
-}
 
 void USARTPC_Init(void){
 		unsigned int baudrate;
@@ -271,7 +259,7 @@ void USARTPC_Init(void){
 	
 }
 
-char USART_putchar(char tx){
+char USART_putchar(char tx){//Put out one char
 	char good = 0;
 	while (!(UCSR1A & (1<<UDRE1)));
 	
@@ -283,7 +271,7 @@ char USART_putchar(char tx){
 }
 
 char USART_putstring(char* tx, unsigned int totalChar){
-	char good = 0;
+	char good = 0; //Calls put char until the string is done
 	int i = 0;
 	
 	for(i=0;i<totalChar;i++){

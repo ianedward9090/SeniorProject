@@ -21,13 +21,13 @@ void demo_memory(void){
 		USART_putstring(bufferchar,strlen(bufferchar));
 		USART_putstring(":   ",4);
 		buffer = EEPROM_read(((i*12)&0xff00)>>8,(i*12)&0xff,12);
-		EEPROM_DUMP_POINT(buffer);
-		USART_putchar('\n');
-		USART_putchar('\r');
+		EEPROM_DUMP_POINT(buffer); //Send a point out serially
+		USART_putchar('\n');//Newline
+		USART_putchar('\r');//Carriage return
 	}
 }
 
-void init_everything(void){
+void init_everything(void){ //All the initialization routines
 	USART_Init (9600);
 	USARTPC_Init();
 	ADC_Init_C();
@@ -38,18 +38,18 @@ void init_everything(void){
 
 unsigned int Home_Azimuth(void){
 	unsigned int currentazimuth = 0;
-	while(!LIMIT2){
+	while(!LIMIT2){//Check to see if limit is pushed
 		currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-		_delay_ms(500);
+		_delay_ms(300);
 	}
 	return currentazimuth;
 }
 
 unsigned int Home_Elevation(void){
 	unsigned int currentelevation = 0;
-	while(!LIMIT3){
+	while(!LIMIT3){//Check to see it limit is pushed
 		currentelevation = rotate_relative_elevation(currentelevation, -1);
-		_delay_ms(500);
+		_delay_ms(300);
 	}
 	return currentelevation;
 }

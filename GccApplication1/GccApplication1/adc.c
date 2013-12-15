@@ -1,7 +1,6 @@
 #include <avr/io.h>
-#include "adc.h"
 #include <avr/interrupt.h> 
-
+#include "adc.h"
 
 void ADC_Init_C(void){
 	//ADCSRA |= (1 << ADPS2) | (1 << ADPS0); //prescaler of 32
@@ -34,7 +33,7 @@ void ADC_ON(void){
 
 int ADC_READ(void){
 	ADCSRA |= (1<<ADSC);
-	while (ADCSRA & (1<<ADSC));
+	while (ADCSRA & (1<<ADSC)); //wait for conversion to be done
 	return ADCH;
 	
 }

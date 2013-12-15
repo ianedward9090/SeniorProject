@@ -35,10 +35,13 @@ int main(void)
 	int address = 0;
 	int wise = 0; //how many steps to take
 
-	char *a[2];
+	char buffer2[50];
+	
+	char *a[2]; //Points
 	a[0] = "650 ";
 	a[1] = "1275";
-	char *programs[4];
+	
+	char *programs[4]; //Programs
 	programs[0] = "MemoryClear     ";
 	programs[1] = "MemoryDump      ";
 	programs[2] = "SunTracker      ";
@@ -47,14 +50,14 @@ int main(void)
 	PORTC = 0; //for motor control
 	DDRC = 0xff;
 	DDRE = 0x00;
-	PORTE = (1<<PE2) | (1<<PE3) | (1<<PE6) | (1<<PE7);
+	PORTE = (1<<PE2) | (1<<PE3) | (1<<PE6) | (1<<PE7);//Pullup resistors
 	
 	unsigned int currentazimuth = 0; //keeping track of azimuth
 	unsigned int currentelevation = 0;//keeping track of elevation
 	unsigned int baud = 9600;
 	unsigned int findazimuth = 0;
 	unsigned int findelevation = 0;
-	unsigned int i,j;
+	unsigned int i, j;
 	
 	float voltage,current,mw;
 	float wiser = 3.6;
@@ -72,10 +75,8 @@ int main(void)
 	TWI_init();
 	_delay_ms(100);
 	
-	char buffer2[50];
-	////char buffer2[50];
+	
 	/*********MAIN CODE WILL START HERE***********/
-	//char buffer2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	int azimuthrotate = 0;
 	
 	transmitstring("Program?",8);
@@ -251,7 +252,7 @@ int main(void)
 						currentelevation = rotate_relative_elevation(currentelevation, wise);//rotate 90 degrees
 						
 						if(elevation > 0 && elevation <1){
-							elevation = 0;
+							elevation = 0; //Clear Elevation
 						}
 						elevation += wiser;
 						adcval = 0;
@@ -285,11 +286,10 @@ int main(void)
 						else if(adcval<58){//Below 20 mA range
 							mw = (8.0532 * current) + 73.4447;
 						}
-						//itoa(mw,bufferadc,10);
 						address = EEPROM_write_datapoint(mw,azimuth,elevation,address);//write the datapoint
-						int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);
+						int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);//Place the points into buffer2
 						clearlcd();//Refresh LCD
-						transmitstring(buffer2,l);
+						transmitstring(buffer2,l);//Show Datapoint on LCD
 						_delay_ms(400);
 						if(BLACK_BUTTON){//To show our spec
 							_delay_ms(20000);
