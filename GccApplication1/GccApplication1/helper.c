@@ -45,8 +45,8 @@ void init_everything(void){ //All the initialization routines
 unsigned int Home_Azimuth(void){
 	unsigned int currentazimuth = 0;
 	while(!LIMIT2){//Check to see if limit is pushed
-		currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-		_delay_ms(300);
+		currentazimuth = rotate_relative_azimuth(currentazimuth, -1);
+		_delay_ms(100);
 	}
 	return currentazimuth;
 }
@@ -55,7 +55,7 @@ unsigned int Home_Elevation(void){
 	unsigned int currentelevation = 0;
 	while(!LIMIT3){//Check to see it limit is pushed
 		currentelevation = rotate_relative_elevation(currentelevation, -1);
-		_delay_ms(300);
+		_delay_ms(100);
 	}
 	return currentelevation;
 }

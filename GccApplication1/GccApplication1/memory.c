@@ -92,7 +92,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 		
 		i2c_send_data(watts1.s[i]);//Send one char at a time
 		stopi2c();
-		_delay_ms(30);
+		_delay_ms(5);
 		address++;//Next memory address
 		lowaddress = address & 0xff;
 		highaddress = (address &0xff00)>>8;
@@ -101,7 +101,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 	for(i = 0; i < 4; i++){
 		i2c_send_data(elevation1.s[i]);
 		stopi2c();
-		_delay_ms(30);
+		_delay_ms(5);
 		address++;
 		lowaddress = address & 0xff;
 		highaddress = (address &0xff00)>>8;
@@ -111,7 +111,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 	for(i = 0; i < 4; i++){
 		i2c_send_data(azimuth1.s[i]);
 		stopi2c();
-		_delay_ms(30);
+		_delay_ms(5);
 		address++;
 		lowaddress = address & 0xff;
 		highaddress = (address &0xff00)>>8;
@@ -119,7 +119,7 @@ unsigned int EEPROM_write_datapoint(float watts, float elevation, float azimuth,
 	}
 
 	stopi2c();
-	_delay_ms(20);
+	_delay_ms(5);
 	return address;
 }
 unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress){
@@ -139,19 +139,19 @@ unsigned char EEPROM_address(unsigned char highAddress, unsigned char lowAddress
 		return(1);
 	}
 	error = i2c_send_address(highAddress);
-	if(error == 1){
+	/*if(error == 1){
 		transmitstring("error",5);
 		stopi2c();
 		return(1);
-	}
+	}*/
 	
 	error = i2c_send_address(lowAddress);
 	
-	if(error == 1){
+	/*if(error == 1){
 		transmitstring("error",5);
 		stopi2c();
 		return(1);
-	}
+	}*/
 	
 	return 0;
 }
@@ -203,16 +203,16 @@ unsigned char i2c_receiveData_NACK(void)
 }
 
 unsigned char EEPROM_erase(void){
-	_delay_ms(1000);
+	_delay_ms(100);
 	int i;
 	int address = 0;
 	for(i = 0; i<2700; i++){// Fill everything with 0's
 		address = EEPROM_write_datapoint(0,0,0,address);
-		_delay_ms(10);
+		_delay_ms(5);
 	}
 	transmitstring("Complete",8);//Show complete on the LCD
 	stopi2c();
-	_delay_ms(1000);
+	_delay_ms(100);
 	return 0;
 }
 

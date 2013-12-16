@@ -6,8 +6,8 @@
 
 #include "motor.h"
 
-void clockwise(void)//Test function not used anymore
-{
+void clockwise(void){//Test function not used anymore
+
 	PORTC = 0b00001010;
 	_delay_ms(5);
 	PORTC = 0b00001001;
@@ -18,8 +18,7 @@ void clockwise(void)//Test function not used anymore
 	_delay_ms(5);
 }
 
-void counterclockwise(void)// Test functions not ever used anymore
-{
+void counterclockwise(void){// Test functions not ever used anymore
 	PORTC = 0b00000110;
 	_delay_ms(5);
 	PORTC = 0b00000101;
@@ -30,7 +29,7 @@ void counterclockwise(void)// Test functions not ever used anymore
 	_delay_ms(5);
 }
 
-unsigned int rotate_relative_azimuth(int current_state, int steps) {
+unsigned int rotate_relative_azimuth(int current_state, int steps){
 	unsigned int states[] = {0b00000110, 0b00000101, 0b00001001, 0b00001010};
 	unsigned int next_state = current_state;
 	unsigned int current_upper_PORTC = 0;
@@ -60,7 +59,7 @@ unsigned int rotate_relative_azimuth(int current_state, int steps) {
 }
 
 
-unsigned int rotate_relative_elevation(int current_state, int steps) {
+unsigned int rotate_relative_elevation(int current_state, int steps){
 	unsigned int states[] = {0b01100000, 0b01010000, 0b10010000, 0b10100000}; //See motor documentation
 	unsigned int next_state = current_state;
 	unsigned int current_lower_PORTC = 0;
@@ -71,7 +70,7 @@ unsigned int rotate_relative_elevation(int current_state, int steps) {
 			next_state = current_state - 1;
 			} else if (steps > 0) {
 			next_state = current_state + 1;
-		};
+		}
 		
 		// Preserve the lower four bits
 		current_lower_PORTC = PORTC&0x0F;

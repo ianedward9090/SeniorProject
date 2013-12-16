@@ -74,8 +74,7 @@ int main(void)
 	LCD_Init();
 	TWI_init();
 	_delay_ms(100);
-	
-	
+
 	/*********MAIN CODE WILL START HERE***********/
 	int azimuthrotate = 0;
 	
@@ -110,8 +109,12 @@ int main(void)
 					transmitstring("DUMPED!",6);
 					break;
 				case 2:{
-					int case2points = 1;
-					while(case2points){
+					_delay_ms(500);//Debouncing
+					clearlcd();
+					transmitstring("Points?",7);
+					nextline();
+					int selecting_point2 = 1;
+					while(selecting_point2){
 						if(RED_BUTTON){
 							points++;
 							if(points>1){
@@ -123,16 +126,22 @@ int main(void)
 							_delay_ms(700);
 						}
 						if(BLACK_BUTTON){
-							case2points = 0;
+							selecting_point2 = 0;
 						}
 					}
-					int counter = a[points];
-					while(counter >0 ){
-						clearlcd();
-						currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-						currentelevation = rotate_relative_elevation(currentelevation, -1);
-						transmitstring("Finding Sun",11);
 					
+					int counter = a[points];
+					currentelevation = Home_Elevation();
+					currentazimuth = Home_Azimuth();
+					currentelevation = rotate_relative_elevation(currentelevation, 50);
+					currentazimuth = rotate_relative_azimuth(currentazimuth, 3);
+					while(counter > 0 ){
+						clearlcd();
+						transmitstring("Finding Sun",11);
+						elevationlimit = 0;
+						azimuthlimit = 0;
+						azimuth = 0; 
+						elevation = 0;
 						ADC_Init_B_Azimuth();
 						ADC_ON();
 						_delay_ms(100);
@@ -183,9 +192,10 @@ int main(void)
 						int l = sprintf(buffer2,"%.0f,%.1f,%.1f",mw,azimuth,elevation);
 						clearlcd();//Refresh LCD
 						transmitstring(buffer2,l); //Show the point
-					
+						_delay_ms(100);
 						rotate_relative_elevation(findelevation, elevationlimit); //Move back
 						rotate_relative_azimuth(findazimuth, -azimuthlimit); //Move back
+						_delay_ms(10000);
 					}
 					
 					break;
@@ -195,11 +205,11 @@ int main(void)
 					ADC_Init_C();
 					clearlcd();
 					transmitstring("Homing",6);
-					//currentazimuth = Home_Azimuth();
-					//currentelevation = Home_Elevation();
-					//currentazimuth = rotate_relative_azimuth(currentazimuth, 1);
-					//currentelevation = rotate_relative_elevation(currentelevation, -1);
-					_delay_ms(700);
+					currentelevation = Home_Elevation();
+					currentazimuth = Home_Azimuth();
+					currentelevation = rotate_relative_elevation(currentelevation, 1);
+					currentazimuth = rotate_relative_azimuth(currentazimuth, 3);
+					_delay_ms(500);
 					clearlcd();
 					transmitstring("Points?",7);
 					nextline();
